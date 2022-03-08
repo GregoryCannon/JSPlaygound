@@ -12,11 +12,11 @@ const NEWLINE = "<br/>";
 const SAMPLES = [
   {
       title: "Simple For Loop",
-      code: "for (int i = 0; i < 10; i++) {\n\tprint(i);\n}"
+      code: "for (int i = 1; i <= 10; i++) {\n\tprint(i);\n}"
   },
   {
     title: "Adding Up Numbers",
-    code: "int total = 0;\nfor (int i = 0; i < 10; i++) {\n\ttotal = total + i;\n}\nprint(\"Total: \" + total);"
+    code: "int total = 0;\nfor (int i = 1; i <= 10; i++) {\n\ttotal = total + i;\n}\nprint(\"Total: \" + total);"
 }
 ]
 
