@@ -1,0 +1,96 @@
+body {
+    font-size: 24px;
+}
+
+textarea, button {
+    font-size: 24px;
+}
+
+#code-area {
+    width: 400px;
+    height: 200px;
+    min-width: 400px;
+    min-height: 200px;
+}
+
+#run-button {
+    background-color: lightblue;
+    border: 1px solid black;
+    border-radius: 10px;
+    height: 50px;
+    width: 200px;
+    margin: 50px 50px 20px 50px;
+}
+
+textarea,
+pre {
+    -moz-tab-size : 4;
+      -o-tab-size : 4;
+         tab-size : 4;
+}
+
+#output-div {
+    font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
+    font-size: 24px;
+    background-color: lightblue;
+    padding: 24px;
+}
+
+
+#code-container {
+    position: relative;
+    width: 400px;
+    height: 200px;
+}
+
+#code-area {
+    position: absolute;
+    opacity: 1;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    color: #000;
+    background: 0 0;
+    text-shadow: 0 1px #fff;
+    font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
+    font-size: 1em;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: break-word;
+    line-height: 1.5;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+
+    overflow: scroll;
+    min-width: 100px;
+    min-height: 100px;
+}
+
+textarea {
+    word-break: break-all;
+}
+
+#rendered-code-container {
+    position: absolute;
+    left: 3;
+    right: 0;
+    top: 3;
+    bottom: 0;
+
+    pointer-events: none;
+    overflow: scroll;
+}
+
+#rendered-code-container * {  
+    padding: 0;
+    margin: 0;
+}
