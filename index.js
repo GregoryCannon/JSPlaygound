@@ -4,9 +4,21 @@ const codeTextArea = document.getElementById("code-area");
 const codeContainer = document.getElementById('code-container');
 const renderedCodeContainer = document.getElementById('rendered-code-container');
 const runCodeButton = document.getElementById("run-button");
+const presetsContainer = document.getElementById("presets");
 
 const NEWLINE = "<br/>";
 
+
+const SAMPLES = [
+  {
+      title: "Simple For Loop",
+      code: "for (int i = 0; i < 10; i++) {\n\tprint(i);\n}"
+  },
+  {
+    title: "Adding Up Numbers",
+    code: "int total = 0;\nfor (int i = 0; i < 10; i++) {\n\ttotal = total + i;\n}\nprint(\"Total: \" + total);"
+}
+]
 
 
 // function WriteCookie(newVal) {
@@ -139,5 +151,19 @@ function onCodeChanged() {
 }
 
 runCodeButton.addEventListener("click", runCode);
+
+
+function loadSample(i) {
+  codeTextArea.value = SAMPLES[i].code;
+  onCodeChanged();
+}
+
+SAMPLES.forEach((sample, i) => {
+  const button = document.createElement("button");
+  button.innerHTML = sample.title;
+  button.onclick = () => loadSample(i);
+  presetsContainer.appendChild(button);
+})
+
 
 // ReadCookie();

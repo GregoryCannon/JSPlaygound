@@ -6,6 +6,14 @@ textarea, button {
     font-size: 24px;
 }
 
+#presets {
+    margin: 20px 0;
+}
+
+#presets > * {
+    margin-right: 5px;
+}
+
 #code-area {
     width: 400px;
     height: 200px;
