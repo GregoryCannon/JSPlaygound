@@ -19,8 +19,19 @@ const SAMPLES = [
     code: "int total = 0;\nfor (int i = 1; i <= 10; i++) {\n\ttotal = total + i;\n}\nprint(\"Total: \" + total);"
   },
   {
+    title: "Warm-Up Activity",
+    instructions: "Can you make the program print 'Hello' 10 times?",
+    code: "print(\"Welcome to CS in English!\")\nfor (int i = 1; i <= 10; i++) {\n\t// ???\n}"
+  },
+  {
     title: "Stars Activity 1",
-    code: "var stars = \"\";\nfor (int i = 1; i <= 10; i++) {\n\tstars = stars + \"*\";\n\tprint(stars + \" \" + i);\n}"
+    instructions: "Can you print a square out of stars?<br><br>********<br>********<br>********<br>********<br>********",
+    code: "print(\"Welcome to CS in English!\")\nfor (int i = 1; i <= 10; i++) {\n\tvar stars = \"********\"\n\t// ???\n}"
+  },
+  {
+    title: "Stars Activity 2",
+    instructions: "Can you print a triangle out of stars?<br><br>*<br>**<br>***<br>****<br>*****<br>******<br>*******<br>********",
+    code: "var stars = \"\";\nfor (int i = 1; i <= 8; i++) {\n\tstars = stars + \"*\";\n\tprint(stars);\n}"
   }
 ]
 
@@ -159,6 +170,7 @@ runCodeButton.addEventListener("click", runCode);
 
 function loadSample(i) {
   codeTextArea.value = SAMPLES[i].code;
+  document.getElementById("instructions").innerHTML = SAMPLES[i].instructions || "";
   console.log(SAMPLES[i].code.replace("@", "{}"));
   onCodeChanged();
 }
