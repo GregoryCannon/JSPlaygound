@@ -178,12 +178,14 @@ function loadSample(i) {
   codeTextArea.value = SAMPLES[i].code;
   document.getElementById("instructions").innerHTML = SAMPLES[i].instructions || "";
   onCodeChanged();
+  outputDiv.innerHTML = "";
 }
 
 function loadActivity(i) {
   codeTextArea.value = ACTIVITIES[i].code;
   document.getElementById("instructions").innerHTML = ACTIVITIES[i].instructions || "";
   onCodeChanged();
+  outputDiv.innerHTML = "";
 }
 
 SAMPLES.forEach((sample, i) => {
