@@ -1,6 +1,7 @@
 body {
     font-size: 24px;
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding-left: 16px;
 }
 
 textarea, button {
@@ -14,6 +15,13 @@ textarea, button {
 #presets > button {
     margin-right: 5px;
     background-color: cornsilk;
+    border: 1px solid grey;
+    padding: 3px 8px;
+}
+
+#activities > button {
+    margin-right: 5px;
+    background-color: rgb(220, 255, 239);
     border: 1px solid grey;
     padding: 3px 8px;
 }
@@ -39,6 +47,7 @@ pre {
     font-size: 24px;
     background-color: lightblue;
     padding: 24px;
+    margin-bottom: 100px;
 }
 
 
@@ -101,5 +110,6 @@ textarea {
 }
 
 #instructions {
-    margin: 10px;
+    margin-top: 30px;
+    margin-bottom: 10px;
 }
