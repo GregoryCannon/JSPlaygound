@@ -17,7 +17,11 @@ const SAMPLES = [
   {
     title: "Adding Up Numbers",
     code: "int total = 0;\nfor (int i = 1; i <= 10; i++) {\n\ttotal = total + i;\n}\nprint(\"Total: \" + total);"
-}
+  },
+  {
+    title: "Stars Activity 1",
+    code: "var stars = \"\";\nfor (int i = 1; i <= 10; i++) {\stars = stars + \"*\";\nprint(stars + \" \" + i);\n}"
+  }
 ]
 
 
@@ -155,6 +159,7 @@ runCodeButton.addEventListener("click", runCode);
 
 function loadSample(i) {
   codeTextArea.value = SAMPLES[i].code;
+  console.log(SAMPLES[i].code.replace("@", "{}"));
   onCodeChanged();
 }
 

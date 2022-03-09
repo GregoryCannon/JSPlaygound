@@ -76,6 +76,8 @@ pre {
     -moz-hyphens: none;
     -ms-hyphens: none;
     hyphens: none;
+    overflow: hidden;
+    resize: none;
 }
 
 textarea {
@@ -90,7 +92,7 @@ textarea {
     bottom: 0;
 
     pointer-events: none;
-    overflow: scroll;
+    overflow: hidden;
 }
 
 #rendered-code-container * {  
