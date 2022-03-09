@@ -20,7 +20,7 @@ const SAMPLES = [
   },
   {
     title: "Stars Activity 1",
-    code: "var stars = \"\";\nfor (int i = 1; i <= 10; i++) {\stars = stars + \"*\";\nprint(stars + \" \" + i);\n}"
+    code: "var stars = \"\";\nfor (int i = 1; i <= 10; i++) {\n\tstars = stars + \"*\";\n\tprint(stars + \" \" + i);\n}"
   }
 ]
 
