@@ -1,12 +1,15 @@
 
 const express = require("express");
-const bodyParser = require("body-parser")
+const path = require("path");
   
 const codeMap = {};
 
 // New app using express module
 const app = express();
 app.use(express.json());
+
+// Serve frontend
+app.use(express.static(path.join(__dirname, '../client')));
 
 // Set CORS policy
 app.use((req, res, next) => {
@@ -22,9 +25,9 @@ app.get("/data", function(req, res) {
   res.end(JSON.stringify(codeMap));
 });
 
-app.get("/name", function(req, res) {
-  res.end(JSON.stringify(codeMap));
-});
+// app.get("/", function (req, res) {
+//   res.sendFile(path.join(__dirname, "../client/index.html"));
+// })
   
 app.post("/", function (req, res) {
   console.log(req.body);
