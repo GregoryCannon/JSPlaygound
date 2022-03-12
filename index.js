@@ -8,7 +8,7 @@ const presetsContainer = document.getElementById("presets");
 const activitiesContainer = document.getElementById("activities");
 
 const IS_PROD = false;
-const SERVER_URL = "http://127.0.0.1:3000";
+const SERVER_URL = IS_PROD ? "http://csinenglish.herokuapp.com" : "http://127.0.0.1:3000";
 let hasChangedCode = false;
 
 const NEWLINE = "<br/>";
