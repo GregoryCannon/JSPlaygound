@@ -130,6 +130,10 @@ textarea {
     margin: 0;
 }
 
+#ta-code-section {
+    max-width: 800px;
+}
+
 #instructions {
     margin-top: 30px;
     margin-bottom: 10px;
