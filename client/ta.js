@@ -34,7 +34,7 @@ function refreshCode() {
 
 function refresh() {
   console.log("refreshing...");
-  fetch('http://csinenglish.herokuapp.com/data')
+  fetch('https://csinenglish.herokuapp.com/data')
     .then(response => response.json())
     .then((data) => {
       console.log(data);
