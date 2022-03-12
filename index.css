@@ -1,7 +1,25 @@
 body {
     font-size: 24px;
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    padding-left: 16px;
+    padding: 0 10px;
+}
+
+#name-input {
+    font-size: 24px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 16px 0;
+}
+
+h6 {
+    font-weight: 300;
+}
+
+.section {
+    background-color: #e7eff1;
+    padding: 10px 20px;
+    margin: 10px 0px;
 }
 
 textarea, button {
@@ -44,11 +62,12 @@ pre {
 
 #output-div {
     font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
-    font-size: 24px;
+    font-size: 20px;
     background-color: lightblue;
     padding: 24px;
-    margin-bottom: 100px;
+    margin-bottom: 50px;
     max-width: 800px;
+    min-height: 100px;
 }
 
 
@@ -70,6 +89,7 @@ pre {
 
     color: #000;
     background: 0 0;
+    background-color: white;
     text-shadow: 0 1px #fff;
     font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
     font-size: 1em;

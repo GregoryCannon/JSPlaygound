@@ -7,29 +7,40 @@
 </head>
 
 <body>
-    <h1>Code</h1>
+    <h1>CS in English: Javascript Playground</h1>
+    <h6>This page contains a custom Javascript interpreter. Notably has the addition of a print() function.</h6>
 
-    <h3>Examples</h3>
-    <div id="presets">
-        <!-- Buttons added programmatically -->
-    </div>
+    <br>Your Name:
+    <span id=user-name></span>
 
-    <div id="activities">
-        <!-- Buttons added programmatically -->
-    </div>
-
-    <div id="instructions"></div>
-
-    <div id="code-container">
-        <textarea oninput="onCodeChanged()" id="code-area" placeholder="Enter code here!"></textarea>
-        <div id="rendered-code-container">
+    <div class="section" id="editor-area">
+        <h2>Code</h2>
+        <h4>Examples</h4>
+        <div id="presets">
+            <!-- Buttons added programmatically -->
         </div>
 
-    </div>
-    <button id="run-button">Run Code!</button>
+        <h4>Activities</h4>
+        <div id="activities">
+            <!-- Buttons added programmatically -->
+        </div>
 
-    <h1>Output</h1>
-    <div id="output-div"><br /></div>
+        <div id="instructions"></div>
+
+        <div id="code-container">
+            <textarea oninput="onCodeChanged()" id="code-area" placeholder="Enter code here!"></textarea>
+            <div id="rendered-code-container">
+            </div>
+
+        </div>
+        <button id="run-button">Run Code!</button>
+    </div>
+
+    <div class="section">
+        <h1>Output</h1>
+        <div id="output-div"><br /></div>
+    </div>
+
 </body>
 
 <script src="prism/prism.js"></script>

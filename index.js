@@ -7,6 +7,10 @@ const runCodeButton = document.getElementById("run-button");
 const presetsContainer = document.getElementById("presets");
 const activitiesContainer = document.getElementById("activities");
 
+const IS_PROD = false;
+const SERVER_URL = "http://127.0.0.1:3000";
+let hasChangedCode = false;
+
 const NEWLINE = "<br/>";
 
 
@@ -14,12 +18,12 @@ const SAMPLES = [
   {
     title: "Simple For Loop",
     instructions: "This is an example of a for loop that counts to 10.",
-    code: "for (int i = 1; i <= 10; i++) {\n\tprint(i);\n}"
+    code: "for (int i = 1; i <= 10; i++) {\n\tprint(i)\n}"
   },
   {
     title: "Adding Up Numbers",
     instructions: "This for loop adds up all the numbers from 1 to 10.",
-    code: "int total = 0;\nfor (int i = 1; i <= 10; i++) {\n\ttotal = total + i;\n}\nprint(\"Total: \" + total);"
+    code: "int total = 0\nfor (int i = 1; i <= 10; i++) {\n\ttotal = total + i\n}\nprint(\"Total: \" + total)"
   },
 ]
 
@@ -37,7 +41,12 @@ const ACTIVITIES = [
   {
     title: "Stars Activity 2",
     instructions: "Can you print a triangle out of stars?<br><br>*<br>**<br>***<br>****<br>*****<br>******<br>*******<br>********",
-    code: "var stars = \"\";\nfor (int i = 1; i <= 8; i++) {\n\tstars = stars + \"*\";\n\tprint(stars);\n}"
+    code: "var stars = \"\"\nfor (int i = 1; i <= 8; i++) {\n\tstars = ??\n\tprint(stars)\n}"
+  },
+  {
+    title: "Challenge Activity",
+    instructions: "Can you multiply together all these numbers? <br><br>3 x 4 x 5 x 6 x 7",
+    code: "var product = 1\nfor (   ??   ) {\n\t// ??\n}\nprint(product)"
   },
 ]
 
@@ -147,7 +156,9 @@ function textAreaAdjust(element, syncedElements) {
   }
 }
 
-function onCodeChanged() {  
+function onCodeChanged() {
+  hasChangedCode = true;
+
   /* Create pre code */
   let code = document.createElement("code");
   code.className = "language-javascript";
@@ -203,4 +214,37 @@ ACTIVITIES.forEach((sample, i) => {
 })
 
 
-// ReadCookie();
+function getUserName() {
+  // Get name from alert
+  let userName = "";
+  while (!userName) {
+    userName = prompt("Please enter your name");
+  }
+  console.log("setting name", userName);
+  document.getElementById("user-name").innerHTML = userName;
+}
+
+
+function postToServer() {
+  if (hasChangedCode) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", SERVER_URL, true);
+  
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Content-Type", "application/json");
+  
+    xhr.onreadystatechange = function() { // Call a function when the state changes.
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            // Request finished. Do processing here.
+        }
+    }
+    xhr.send(JSON.stringify({ name: userName, code: codeTextArea.value }));
+    hasChangedCode = false;
+  }
+
+  // Repeatedly update the server
+  setTimeout(postToServer, 3000);
+}
+
+getUserName();
+postToServer();
