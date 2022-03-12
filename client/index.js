@@ -10,6 +10,7 @@ const activitiesContainer = document.getElementById("activities");
 const IS_PROD = true;
 const SERVER_URL = IS_PROD ? "http://csinenglish.herokuapp.com" : "http://127.0.0.1:3000";
 let hasChangedCode = false;
+let userName = "";
 
 const NEWLINE = "<br/>";
 
@@ -159,24 +160,7 @@ function textAreaAdjust(element, syncedElements) {
 function onCodeChanged() {
   hasChangedCode = true;
 
-  /* Create pre code */
-  let code = document.createElement("code");
-  code.className = "language-javascript";
-
-  let codeText = codeTextArea.value;
-  codeText = codeText.replace(/(?:\r\n|\r|\n)/g, '\r\n');
-  code.innerHTML = codeText;
-  
-  let pre = document.createElement("pre");
-  pre.setAttribute("aria-hidden", "true"); // Hide for screen readers
-  pre.style.background = "transparent";
-  pre.append(code);
-
-  while (renderedCodeContainer.firstChild) {
-    renderedCodeContainer.removeChild(renderedCodeContainer.firstChild);    
-  }
-  renderedCodeContainer.appendChild(pre);
-  Prism.highlightElement(code);
+  renderCodeWithSyntaxHighlighting(codeTextArea.value, renderedCodeContainer);
 
   // WriteCookie(codeText);
   textAreaAdjust(codeTextArea, [codeContainer, renderedCodeContainer]);
@@ -216,7 +200,6 @@ ACTIVITIES.forEach((sample, i) => {
 
 function getUserName() {
   // Get name from alert
-  let userName = "";
   while (!userName) {
     userName = prompt("Please enter your name");
   }
@@ -235,6 +218,7 @@ function postToServer() {
     xhr.onreadystatechange = function() { // Call a function when the state changes.
         if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
             // Request finished. Do processing here.
+          console.log("Posted to server.");
         }
     }
     xhr.send(JSON.stringify({ name: userName, code: codeTextArea.value }));
@@ -242,8 +226,8 @@ function postToServer() {
   }
 
   // Repeatedly update the server
-  setTimeout(postToServer, 3000);
+  setTimeout(postToServer, 2000);
 }
 
 setTimeout(getUserName, 10);
-setTimeout(postToServer, 3000);
+setTimeout(postToServer, 2000);
