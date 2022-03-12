@@ -7,8 +7,7 @@ const runCodeButton = document.getElementById("run-button");
 const presetsContainer = document.getElementById("presets");
 const activitiesContainer = document.getElementById("activities");
 
-const IS_PROD = process.env.IS_PROD;
-console.log("process.env", process.env);
+const IS_PROD = true;
 const SERVER_URL = IS_PROD ? "http://csinenglish.herokuapp.com" : "http://127.0.0.1:3000";
 let hasChangedCode = false;
 
@@ -221,7 +220,6 @@ function getUserName() {
   while (!userName) {
     userName = prompt("Please enter your name");
   }
-  console.log("setting name", userName);
   document.getElementById("user-name").innerHTML = userName;
 }
 
@@ -247,5 +245,5 @@ function postToServer() {
   setTimeout(postToServer, 3000);
 }
 
-getUserName();
-postToServer();
+setTimeout(getUserName, 10);
+setTimeout(postToServer, 3000);
