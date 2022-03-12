@@ -7,7 +7,8 @@ const runCodeButton = document.getElementById("run-button");
 const presetsContainer = document.getElementById("presets");
 const activitiesContainer = document.getElementById("activities");
 
-const IS_PROD = false;
+const IS_PROD = process.env.IS_PROD;
+console.log("process.env", process.env);
 const SERVER_URL = IS_PROD ? "http://csinenglish.herokuapp.com" : "http://127.0.0.1:3000";
 let hasChangedCode = false;
 
