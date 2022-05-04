@@ -14,8 +14,17 @@
   </div>
   <div class="section" id=ta-code-section>
     <div id="student-code-title">(No student loaded)</div>
-    <div id="rendered-code-ta">
+    <div id="code-container">
+      <textarea oninput="onCodeChanged()" id="code-area" placeholder="Enter code here!"></textarea>
+      <div id="rendered-code-container"></div>
     </div>
+    <button id="run-button">Run Code!</button>
+  </div>
+
+  <div class="section">
+    <h1>Output</h1>
+    <div id="output-div"><br /></div>
+  </div>
 </body>
 
 <script src="prism/prism.js"></script>
