@@ -125,6 +125,14 @@ textarea {
     overflow: hidden;
 }
 
+@-moz-document url-prefix() { 
+    #rendered-code-container {
+        left: 4;
+        top: 4;
+        bottom: 0;
+    }
+  }
+
 #rendered-code-container * {  
     padding: 0;
     margin: 0;
