@@ -39,7 +39,7 @@ allowTabbing = allowTabbing.bind(this);
 class CodeEditor {
   constructor(
       userRole, codeTextArea, codeContainer, renderedCodeContainer, outputDiv,
-      studentButtonContainer, studentCodeTitle) {
+      studentButtonContainer, studentCodeTitle, remoteEditNotificationText) {
     this.userRole = userRole;
     this.codeTextArea = codeTextArea;
     this.codeContainer = codeContainer;
@@ -47,6 +47,7 @@ class CodeEditor {
     this.outputDiv = outputDiv;
     this.studentButtonContainer = studentButtonContainer;
     this.studentCodeTitle = studentCodeTitle;
+    this.remoteEditNotificationText = remoteEditNotificationText;
 
     // UI Setup
     this.codeTextArea.style.visibility = 'hidden';
@@ -109,6 +110,19 @@ class CodeEditor {
           this.hasChangedCode = false;
           console.log('hasChangedCode = false, overwritten');
         }
+
+        // Maybe show a notification that a teacher has edited your code
+        if (this.userRole === ROLE.STUDENT &&
+            this.remoteEditNotificationText !== null) {
+          if (!Number.isInteger(this.codeVersion) && !this.hasChangedCode) {
+            this.remoteEditNotificationText.style.visibility = 'visible';
+          } else {
+            this.remoteEditNotificationText.style.visibility = 'hidden';
+            console.log(this.codeVersion);
+          }
+        }
+
+        // Update the rendered layer to overlay the input layer pixel-for-pixel
         this.renderCodeWithSyntaxHighlighting(
             codeTextArea.value, renderedCodeContainer);
         this.textAreaAdjust(

@@ -1,6 +1,6 @@
 body {
     font-size: 24px;
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     padding: 0 10px;
 }
 
@@ -8,7 +8,12 @@ body {
     font-size: 24px;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     margin: 16px 0;
 }
 
@@ -22,7 +27,8 @@ h6 {
     margin: 20px 0px;
 }
 
-textarea, button {
+textarea,
+button {
     font-size: 24px;
 }
 
@@ -30,15 +36,17 @@ textarea, button {
     margin: 20px 0;
 }
 
-#presets > button {
+#presets>button {
     margin-right: 5px;
+    margin-top: 5px;
     background-color: cornsilk;
     border: 1px solid grey;
     padding: 3px 8px;
 }
 
-#activities > button {
+#activities>button {
     margin-right: 5px;
+    margin-top: 5px;
     background-color: rgb(220, 255, 239);
     border: 1px solid grey;
     padding: 3px 8px;
@@ -55,13 +63,13 @@ textarea, button {
 
 textarea,
 pre {
-    -moz-tab-size : 4;
-      -o-tab-size : 4;
-         tab-size : 4;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
 }
 
 #output-div {
-    font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     font-size: 20px;
     background-color: lightblue;
     padding: 24px;
@@ -91,7 +99,7 @@ pre {
     background: 0 0;
     background-color: white;
     text-shadow: 0 1px #fff;
-    font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     font-size: 1em;
     text-align: left;
     white-space: pre;
@@ -125,15 +133,15 @@ textarea {
     overflow: hidden;
 }
 
-@-moz-document url-prefix() { 
+@-moz-document url-prefix() {
     #rendered-code-container {
         left: 4;
         top: 4;
         bottom: 0;
     }
-  }
+}
 
-#rendered-code-container * {  
+#rendered-code-container * {
     padding: 0;
     margin: 0;
 }
@@ -143,11 +151,26 @@ textarea {
 }
 
 #instructions {
-    margin-top: 30px;
-    margin-bottom: 10px;
+    margin-top: 45px;
+    margin-bottom: 20px;
 }
 
 #student-code-title {
     text-align: center;
     font-weight: bold;
+}
+
+#teacher-edit-notification {
+    color: darkred;
+    font-style: italic;
+    font-size: 20px;
+    visibility: hidden;
+}
+
+#student-body {
+    background: #f3fcff
+}
+
+#ta-body {
+    background: #fff1e9;
 }

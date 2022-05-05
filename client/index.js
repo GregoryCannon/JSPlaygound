@@ -7,48 +7,87 @@ const renderedCodeContainer =
 const runCodeButton = document.getElementById('run-button');
 const presetsContainer = document.getElementById('presets');
 const activitiesContainer = document.getElementById('activities');
+const teacherEditNotification =
+    document.getElementById('teacher-edit-notification');
 
 
 const SAMPLES = [
   {
-    title: 'Simple For Loop',
-    instructions: 'This is an example of a for loop that counts to 10.',
-    code: 'for (int i = 1; i <= 10; i++) {\n\tprint(i)\n}'
+    title: 'Using print()',
+    instructions: 'This example shows how to use the print statement.',
+    code:
+        '// Printing text\nprint("I love Javascript!")\n\n// Printing numbers\nprint(12)\n\n// Using \'+\' to print sentences\nprint("My age is " + 12)'
   },
   {
-    title: 'Adding Up Numbers',
-    instructions: 'This for loop adds up all the numbers from 1 to 10.',
+    title: 'Creating Variables',
+    instructions:
+        'This example shows how to create number and string variables.',
     code:
-        'int total = 0\nfor (int i = 1; i <= 10; i++) {\n\ttotal = total + i\n}\nprint("Total: " + total)'
+        '// Create a number variable\nvar myMoney = 100\nprint(myMoney)\n\n// Create a string variable\nvar nickname = "CodingChampion"\nprint(nickname)'
   },
+  {
+    title: 'Changing Variables',
+    instructions: 'This example shows how to use variables.',
+    code:
+        '// Create a variable\nvar myMoney = 100\nprint(myMoney)\n\n// Change the value\nmyMoney = myMoney + 5\nprint(myMoney)'
+  },
+  {
+    title: 'Functions',
+    instructions: 'This is an example of a function that adds one to a number.',
+    code:
+        '// Create a function\nfunction addOne(myNumber) {\n\treturn myNumber + 1\n}\n\n// Use the function\nvar result = addOne(5)\nprint(result)'
+  },
+
 ];
 
 const ACTIVITIES = [
   {
-    title: 'Warm-Up Activity',
-    instructions: 'Can you make the program print \'Hello\' 10 times?',
-    code:
-        'print("Welcome to CS in English!")\nfor (int i = 1; i <= 10; i++) {\n\t// ???\n}'
+    title: 'Warm-Up Activity 1',
+    instructions: 'Can you print the number 18?',
+    code: 'print()'
   },
   {
-    title: 'Stars Activity 1',
+    title: 'Warm-Up Activity 2',
     instructions:
-        'Can you print a square out of stars?<br><br>********<br>********<br>********<br>********<br>********',
+        'Can you set the value of the variable \'myName\', then print it in a sentence?',
+    code: 'var myName = \'\'\nprint("My name is " + )'
+  },
+  'newline',
+  {
+    title: 'Functions Activity 1',
+    instructions:
+        'Can you call the function addTwo() with an input of 5, and print the result?',
     code:
-        'print("Welcome to CS in English!")\nfor (int i = 1; i <= 5; i++) {\n\tvar stars = "********"\n\t// ???\n}'
+        'function addTwo(number) {\n\treturn number + 2\n}\n\nvar result = // ??\nprint(result)'
   },
   {
-    title: 'Stars Activity 2',
+    title: 'Functions Activity 2',
     instructions:
-        'Can you print a triangle out of stars?<br><br>*<br>**<br>***<br>****<br>*****<br>******<br>*******<br>********',
+        'Can you create the function triple() that multiplies a number by 3?',
     code:
-        'var stars = ""\nfor (int i = 1; i <= 8; i++) {\n\tstars = ??\n\tprint(stars)\n}'
+        'function triple(number) {\n\t// ??\n}\n\nvar result = triple(3)\nprint(result)'
+  },
+  {
+    title: 'Functions Activity 3',
+    instructions:
+        'Can you create a greet() function that takes someone\'s name and says \'Hello\' to them?',
+    code:
+        'function greet(name) {\n\tprint("Hello, " + )\n}\n\ngreet("Greg")\ngreet("Kenji")'
+  },
+  'newline',
+  {
+    title: 'Debugging a Function',
+    instructions:
+        'Can you fix this function so that it correctly subtracts 5 from a number?',
+    code:
+        'function subtractFive number) {\n\tnumber - 5 return\n}\n\nvar result = subtractFive(8)\nprint(result)'
   },
   {
     title: 'Challenge Activity',
     instructions:
-        'Can you multiply together all these numbers? <br><br>3 x 4 x 5 x 6 x 7',
-    code: 'var product = 1\nfor (   ??   ) {\n\t// ??\n}\nprint(product)'
+        'Can you make this function multiply its two parameters together?',
+    code:
+        'function multiply (firstNumber, secondNumber) {\n\t// ?\n}\n\nvar result = multiply(3, 5)\nprint(result)  // Should print 15'
   },
 ];
 
@@ -79,6 +118,10 @@ function promptForUserName() {
   ----------------- */
 
 SAMPLES.forEach((sample, i) => {
+  if (sample === 'newline') {
+    presetsContainer.appendChild(document.createElement('br'));
+    return;
+  }
   const button = document.createElement('button');
   button.innerHTML = sample.title;
   button.onclick = () => loadSample(i);
@@ -86,6 +129,10 @@ SAMPLES.forEach((sample, i) => {
 })
 
 ACTIVITIES.forEach((sample, i) => {
+  if (sample === 'newline') {
+    activitiesContainer.appendChild(document.createElement('br'));
+    return;
+  }
   const button = document.createElement('button');
   button.innerHTML = sample.title;
   button.onclick = () => loadActivity(i);
@@ -94,6 +141,7 @@ ACTIVITIES.forEach((sample, i) => {
 
 const editor = new CodeEditor(
     ROLE.STUDENT, codeTextArea, codeContainer, renderedCodeContainer, outputDiv,
-    /* studentButtonContainer= */ null);
+    /* studentButtonContainer= */ null, /* studentCodeTitle= */ null,
+    teacherEditNotification);
 
 setTimeout(promptForUserName, 10);
