@@ -8,16 +8,6 @@ const runCodeButton = document.getElementById('run-button');
 const presetsContainer = document.getElementById('presets');
 const activitiesContainer = document.getElementById('activities');
 
-const IS_PROD = false;
-const SERVER_URL =
-    IS_PROD ? 'https://csinenglish.herokuapp.com' : 'http://localhost:3000';
-let hasChangedCode = false;
-let codeVersion = 0;
-let userName = '';
-const STUDENT_VERSION_INCREMENT = 1;
-
-const NEWLINE = '<br/>';
-
 
 const SAMPLES = [
   {
@@ -62,100 +52,31 @@ const ACTIVITIES = [
   },
 ];
 
-
-// function WriteCookie(newVal) {
-//   document.cookie = "code=" + "bb";
-//   console.log("wrote cookie");
-// }
-
-// function ReadCookie() {
-//   var allcookies = document.cookie;
-//   console.log("full coookie:", allcookies);
-
-//   // Get all the cookies pairs in an array
-//   cookiearray = allcookies.split(';');
-
-//   // Now take key value pair out of this array
-//   for(var i=0; i<cookiearray.length; i++) {
-//     const name = cookiearray[i].split('=')[0];
-//     const value = cookiearray[i].split('=')[1];
-//     console.log("Cookie found: ", name, value);
-//     if (name == "code") {
-//       codeTextArea.value = value;
-//       onCodeChanged();
-//     }
-//   }
-// }
-
-
-
-function showOutput(outputStr) {
-  if (outputStr.indexOf(NEWLINE) == 0) {
-    outputStr = outputStr.replace(NEWLINE, '');
-  }
-  if (outputStr && outputStr.length > 0) {
-    outputDiv.innerHTML = outputStr;
-  } else {
-    outputDiv.innerHTML = '(Finished running. There was no output.)';
-  }
-}
-
-// Allow tabbing in the code editor
-codeTextArea.addEventListener('keydown', function(e) {
-  if (e.key == 'Tab') {
-    e.preventDefault();
-    var start = this.selectionStart;
-    var end = this.selectionEnd;
-
-    // set textarea value to: text before caret + tab + text after caret
-    this.value =
-        this.value.substring(0, start) + '\t' + this.value.substring(end);
-
-    // put caret at right position again
-    this.selectionStart = this.selectionEnd = start + 1;
-
-    onCodeChanged();
-  }
-});
-
-function textAreaAdjust(element, syncedElements) {
-  element.style.height = '1px';
-  element.style.width = '1px';
-  const newHeight = (25 + element.scrollHeight) + 'px';
-  const newWidth = (25 + element.scrollWidth) + 'px';
-  for (const elt of [element, ...syncedElements]) {
-    elt.style.height = newHeight;
-    elt.style.width = newWidth;
-  }
-}
-
-function onCodeChanged() {
-  hasChangedCode = true;
-
-  renderCodeWithSyntaxHighlighting(codeTextArea.value, renderedCodeContainer);
-
-  // WriteCookie(codeText);
-  textAreaAdjust(codeTextArea, [codeContainer, renderedCodeContainer]);
-}
-
-runCodeButton.addEventListener('click', runCode);
-
-
 function loadSample(i) {
-  codeTextArea.value = SAMPLES[i].code;
   document.getElementById('instructions').innerHTML =
       SAMPLES[i].instructions || '';
-  onCodeChanged();
-  outputDiv.innerHTML = '';
+  editor.loadSampleCode(SAMPLES[i].code);
 }
 
 function loadActivity(i) {
-  codeTextArea.value = ACTIVITIES[i].code;
   document.getElementById('instructions').innerHTML =
       ACTIVITIES[i].instructions || '';
-  onCodeChanged();
-  outputDiv.innerHTML = '';
+  editor.loadSampleCode(ACTIVITIES[i].code);
 }
+
+function promptForUserName() {
+  // Get name from alert
+  let userName;
+  while (!userName) {
+    userName = prompt('Please enter your name');
+  }
+  document.getElementById('user-name').innerHTML = userName;
+  editor.setUserName(userName);
+}
+
+/* ------------------
+    Script start
+  ----------------- */
 
 SAMPLES.forEach((sample, i) => {
   const button = document.createElement('button');
@@ -171,65 +92,8 @@ ACTIVITIES.forEach((sample, i) => {
   activitiesContainer.appendChild(button);
 })
 
+const editor = new CodeEditor(
+    ROLE.STUDENT, codeTextArea, codeContainer, renderedCodeContainer, outputDiv,
+    /* studentButtonContainer= */ null);
 
-function getUserName() {
-  // Get name from alert
-  while (!userName) {
-    userName = prompt('Please enter your name');
-  }
-  document.getElementById('user-name').innerHTML = userName;
-  pullCode();
-}
-
-
-function postToServerAsUser(userNameStr, codeStr) {
-  if (hasChangedCode) {
-    // Increment code version
-    codeVersion += STUDENT_VERSION_INCREMENT;
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', SERVER_URL, true);
-
-    // Send the proper header information along with the request
-    xhr.setRequestHeader('Content-Type', 'application/json');
-
-    xhr.onreadystatechange =
-        function() {  // Call a function when the state changes.
-      if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-        // Request finished. Do processing here.
-        console.log('Posted to server.');
-      }
-    };
-    xhr.send(JSON.stringify(
-        {name: userNameStr, version: codeVersion, code: codeStr}));
-    hasChangedCode = false;
-  }
-}
-
-function pullCode() {
-  fetch(SERVER_URL + '/data')
-      .then(response => response.json())
-      .then((newMap) => {
-        // Load the code map from the server, but preserving local edits
-        if (newMap.hasOwnProperty(userName)) {
-          const [remoteVersion, remoteCode] = newMap[userName];
-          if (remoteVersion > codeVersion) {
-            codeTextArea.value = remoteCode;
-            codeVersion = remoteVersion;
-            onCodeChanged();
-            hasChangedCode = false;  // Any local changes were overwritten
-          }
-        }
-      });
-}
-
-function postToServer() {
-  pullCode();
-  postToServerAsUser(userName, codeTextArea.value)
-
-  // Repeatedly update the server
-  setTimeout(postToServer, 1000);
-}
-
-setTimeout(getUserName, 10);
-setTimeout(postToServer, 1000);
+setTimeout(promptForUserName, 10);
