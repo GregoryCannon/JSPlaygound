@@ -2,7 +2,7 @@ const ROLE = Object.freeze({STUDENT: 0, TEACHER: 1});
 const NEWLINE = '<br/>';
 
 // Config variables
-const IS_PROD = false;
+const IS_PROD = true;
 const SERVER_URL =
     IS_PROD ? 'https://csinenglish.herokuapp.com' : 'http://localhost:3000';
 const STUDENT_VERSION_INCREMENT = 1;
