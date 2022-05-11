@@ -191,7 +191,7 @@ class CodeEditor {
         code = code.replace(/print/g, 'output += "<br/>" + ');
 
         newString += code;
-        newString += ';this.showOutput(output)';
+        newString += '\nthis.showOutput(output)';
         return newString;
       }
 
