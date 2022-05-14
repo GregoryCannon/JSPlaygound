@@ -236,6 +236,9 @@ class CodeEditor {
           const [remoteVersion, remoteCode] = this.codeMap[this.userName];
           this.loadCode(remoteVersion, remoteCode)
         }
+
+        // Schedule an initial push to show that the user is present
+        this.schedulePush();
       }
 
   showOutput =
@@ -296,7 +299,7 @@ class CodeEditor {
 
   pushToServer =
       () => {
-        if (this.hasChangedCode) {
+        if (this.hasChangedCode || this.codeVersion === 0) {
           this.incrementVersion();
           this.makePostRequest(
               {
@@ -331,7 +334,6 @@ class CodeEditor {
 
   schedulePush =
       () => {
-        console.log('hasChangedCode = TRUE');
         this.ticksUntilPush = Math.round(EDIT_TO_PUSH_DELAY_MS / TICK_MS);
       }
 

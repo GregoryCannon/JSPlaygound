@@ -114,14 +114,17 @@ function loadBreakoutRooms() {
 loadBreakoutRooms();
 
 function onSelectBreakoutRoom() {
-  console.log("rerendering options")
   const curRoom = breakoutSelect.value;
   const students = roomStudentLookup[curRoom];
-  console.log(students);
   // Remove all student options
   while (nameSelect.firstChild) {
     nameSelect.removeChild(nameSelect.firstChild);
   }
+  const nullOption = document.createElement("option");
+  nullOption.disabled = true;
+  nullOption.innerHTML = "(select)"
+  nullOption.selected = true;
+  nameSelect.appendChild(nullOption);
   // Add the appropriate options
   for (const student of students) {
     const option = document.createElement("option");
@@ -160,7 +163,7 @@ function login() {
     document.getElementById('user-name').innerHTML = userName;
     editor.setUserName(userName);
 
-    document.getElementById('logged-in-view').style.visibility = 'visible';
+    document.getElementById('logged-in-view').style.display = 'inline';
     document.getElementById('login-form').style.display = 'none';
   } else {
     alert('Breakout room or name missing.')

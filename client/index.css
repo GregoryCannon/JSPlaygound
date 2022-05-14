@@ -1,5 +1,5 @@
 #logged-in-view {
-    visibility: hidden;
+    display: none;
 }
 
 #login-form {
@@ -12,6 +12,10 @@
 
 select {
     font-size: 20px;
+}
+
+option :disabled {
+    color: #8eccff;
 }
 
 #login-button {

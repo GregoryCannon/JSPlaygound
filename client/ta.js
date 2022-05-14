@@ -34,3 +34,5 @@ function loadBreakoutRooms() {
     }
 }
 loadBreakoutRooms();
+
+breakoutSelect.addEventListener("change", editor.renderStudentButtons);
