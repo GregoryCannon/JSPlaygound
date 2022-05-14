@@ -63,6 +63,8 @@ class CodeEditor {
     this.userName = '';
     this.codeMap = null;
     this.ticksUntilPush = -1;
+    this.ticksSinceLastRefreshCount = 0;
+    this.numRefreshesSinceLastCount = 0;
 
     this.syncWithServer();
     this.tickLoop();
@@ -292,6 +294,7 @@ class CodeEditor {
             .then(response => response.json())
             .then((newMap) => {
               console.log('Fetched', this.userRole);
+              this.numRefreshesSinceLastCount += 1;
               // Pull code
               if (newMap.hasOwnProperty(this.userName)) {
                 const [remoteVersion, remoteCode] = newMap[this.userName];
@@ -382,6 +385,13 @@ class CodeEditor {
     } else if (this.ticksUntilPush !== -1) {
       this.ticksUntilPush -= 1;
     }
+
+    if (this.ticksSinceLastRefreshCount > 100) {
+      this.ticksSinceLastRefreshCount = 0;
+      console.log("Num refreshes:", this.numRefreshesSinceLastCount);
+      this.numRefreshesSinceLastCount = 0;
+    }
+    this.ticksSinceLastRefreshCount += 1;
 
     // Auto-loop
     setTimeout(this.tickLoop, TICK_MS);
