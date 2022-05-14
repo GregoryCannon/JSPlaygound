@@ -9,11 +9,11 @@ const STUDENT_VERSION_INCREMENT = 1;
 // The version is rounded before incrementing so the .1 exists as a
 // marker that a teacher was the last editor.
 const TEACHER_VERSION_INCREMENT = 100.1;
-const SAMPLE_INCREMENT = 1000;
-const STUDENT_SYNC_INTERVAL_MS = 1000;
-const TEACHER_SYNC_INTERVAL_MS = 1000;
-const EDIT_TO_PUSH_DELAY_MS = 500;
-const TICK_MS = 100;
+const LOAD_SAMPLE_CODE_INCREMENT = 1000;
+const STUDENT_SYNC_INTERVAL_MS = 100;
+const TEACHER_SYNC_INTERVAL_MS = 100;
+const EDIT_TO_PUSH_DELAY_MS = 50;
+const TICK_MS = 10;
 
 function allowTabbing(textarea, onTabCallback) {
   // Allow tabbing in the code editor
@@ -93,8 +93,8 @@ class CodeEditor {
   loadSampleCode =
       (newCode) => {
         // Set to the next clean multiple of the SAMPLE_INCREMENT
-        const newVersion = SAMPLE_INCREMENT *
-            (Math.floor((this.codeVersion - 0.001) / SAMPLE_INCREMENT) + 1);
+        const newVersion = LOAD_SAMPLE_CODE_INCREMENT *
+            (Math.floor((this.codeVersion - 0.001) / LOAD_SAMPLE_CODE_INCREMENT) + 1);
         this.loadCode(newVersion, newCode);
         this.hasChangedCode = true;
         this.schedulePush();
