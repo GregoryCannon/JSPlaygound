@@ -2,7 +2,7 @@ const ROLE = Object.freeze({STUDENT: 0, TEACHER: 1});
 const NEWLINE = '<br/>';
 
 // Config variables
-const IS_PROD = false;
+const IS_PROD = true;
 const SERVER_URL =
     IS_PROD ? 'https://csinenglish.herokuapp.com' : 'http://localhost:3000';
 const STUDENT_VERSION_INCREMENT = 1;
@@ -92,9 +92,9 @@ class CodeEditor {
 
   loadSampleCode =
       (newCode) => {
-        // Set to the next clean multiple of the SAMPLE_INCREMENT
-        const newVersion = SAMPLE_INCREMENT *
-            (Math.floor((this.codeVersion - 0.001) / SAMPLE_INCREMENT) + 1);
+        // Set to the next clean multiple of the LOAD_SAMPLE_CODE_INCREMENT
+        const newVersion = LOAD_SAMPLE_CODE_INCREMENT *
+            (Math.floor((this.codeVersion - 0.001) / LOAD_SAMPLE_CODE_INCREMENT) + 1);
         this.loadCode(newVersion, newCode);
         this.hasChangedCode = true;
         this.schedulePush();
