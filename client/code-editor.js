@@ -2,7 +2,7 @@ const ROLE = Object.freeze({STUDENT: 0, TEACHER: 1});
 const NEWLINE = '<br/>';
 
 // Config variables
-const IS_PROD = false;
+const IS_PROD = true;
 const SERVER_URL =
     IS_PROD ? 'https://csinenglish.herokuapp.com' : 'http://localhost:3000';
 const STUDENT_VERSION_INCREMENT = 1;
@@ -10,8 +10,8 @@ const STUDENT_VERSION_INCREMENT = 1;
 // marker that a teacher was the last editor.
 const TEACHER_VERSION_INCREMENT = 100.1;
 const LOAD_SAMPLE_CODE_INCREMENT = 1000;
-const STUDENT_SYNC_INTERVAL_MS = 100;
-const TEACHER_SYNC_INTERVAL_MS = 100;
+const STUDENT_SYNC_INTERVAL_MS = 2500;
+const TEACHER_SYNC_INTERVAL_MS = 1000;
 const EDIT_TO_PUSH_DELAY_MS = 500;
 const TICK_MS = 100;
 const SERVER_LAG_MONITORING_PERIOD_TICKS = 100;
