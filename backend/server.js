@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 
 const codeMap = {};
+let antiDdosMultiplier = 1.0;
 
 // New app using express module
 const app = express();
@@ -25,8 +26,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/data', function(req, res) {
-  res.end(JSON.stringify(codeMap));
+app.get('/data', function (req, res) {
+  res.end(JSON.stringify([codeMap, antiDdosMultiplier]));
 });
 
 app.post('/', function(req, res) {
@@ -41,6 +42,15 @@ app.post('/', function(req, res) {
 
   res.end('added to map');
 });
+
+app.post("/ddos", function (req, res) {
+  const newVal = req.body.multiplier;
+  if (newVal > 0.5 && newVal < 10) {
+    antiDdosMultiplier = newVal;
+    console.log("Updated anti-DDOS multiplier to", newVal);
+  }
+  res.end();
+})
 
 app.delete('/', function(req, res) {
   codeMap = {};

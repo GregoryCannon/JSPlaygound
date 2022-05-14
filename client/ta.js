@@ -36,3 +36,28 @@ function loadBreakoutRooms() {
 loadBreakoutRooms();
 
 breakoutSelect.addEventListener("change", editor.renderStudentButtons);
+
+
+document.getElementById("anti-ddos").addEventListener("click", () => {
+    const newVal = parseFloat(prompt("IF YOU DON'T KNOW WHAT THIS IS, CLICK CANCEL NOW.\nEnter new multiplier:"));
+    const body = { multiplier: newVal };
+    if (newVal > 0.5 && newVal < 10) {
+        // Send post request to server updating the anti-DDOS multiplier
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', SERVER_URL + "/ddos", true);
+
+        // Send the proper header information along with the request
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        // Call a function when the state changes.
+        xhr.onreadystatechange = function() {
+          if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+              console.log("Updated server anti-DDOS multiplier");
+          }
+        };
+
+        // Send the request
+        xhr.send(JSON.stringify(body));
+    }
+
+})

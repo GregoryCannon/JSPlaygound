@@ -2,7 +2,7 @@ const ROLE = Object.freeze({STUDENT: 0, TEACHER: 1});
 const NEWLINE = '<br/>';
 
 // Config variables
-const IS_PROD = true;
+const IS_PROD = false;
 const SERVER_URL =
     IS_PROD ? 'https://csinenglish.herokuapp.com' : 'http://localhost:3000';
 const STUDENT_VERSION_INCREMENT = 1;
@@ -14,6 +14,8 @@ const STUDENT_SYNC_INTERVAL_MS = 100;
 const TEACHER_SYNC_INTERVAL_MS = 100;
 const EDIT_TO_PUSH_DELAY_MS = 500;
 const TICK_MS = 100;
+const SERVER_LAG_MONITORING_PERIOD_TICKS = 100;
+let antiDdosMultiplier = 1.0;
 
 function allowTabbing(textarea, onTabCallback) {
   // Allow tabbing in the code editor
@@ -110,7 +112,7 @@ class CodeEditor {
         } else {
           // Local changes were overwritten
           this.hasChangedCode = false;
-          console.log('hasChangedCode = false, overwritten');
+          // console.log('hasChangedCode = false, overwritten');
         }
 
         // Maybe show a notification that a teacher has edited your code
@@ -120,7 +122,7 @@ class CodeEditor {
             this.remoteEditNotificationText.style.visibility = 'visible';
           } else {
             this.remoteEditNotificationText.style.visibility = 'hidden';
-            console.log(this.codeVersion);
+            // console.log(this.codeVersion);
           }
         }
 
@@ -153,14 +155,12 @@ class CodeEditor {
       for (const student of Object.keys(this.codeMap).sort()) {
         const [studentRoom, studentName] = student.split(" | ");
         if (studentRoom !== taRoom && taRoom !== "(all rooms)") {
-          console.log("Skipping...", studentRoom, taRoom);
           continue;
         }
         newList.push(student);
       }
 
       if (JSON.stringify(newList.map(x => x.split(" | ")[1])) !== JSON.stringify(oldList)) {
-        console.log("RE_RENDER BUTTONS");
         // Clear existing buttons
         while (this.studentButtonContainer.firstChild) {
           this.studentButtonContainer.removeChild(
@@ -292,7 +292,10 @@ class CodeEditor {
       () => {
         fetch(SERVER_URL + '/data')
             .then(response => response.json())
-            .then((newMap) => {
+          .then((array) => {
+            const [newMap, serverLagMultiplier] = array;
+            antiDdosMultiplier = serverLagMultiplier;
+
               console.log('Fetched', this.userRole);
               this.numRefreshesSinceLastCount += 1;
               // Pull code
@@ -332,7 +335,7 @@ class CodeEditor {
               },
               () => {console.log('Posted to server.')});
           this.hasChangedCode = false;
-          console.log('hasChangedCode = false, pushed');
+          // console.log('hasChangedCode = false, pushed');
         }
       }
 
@@ -373,8 +376,8 @@ class CodeEditor {
         // Auto-loop
         setTimeout(
             this.syncWithServer,
-            this.userRole === ROLE.STUDENT ? STUDENT_SYNC_INTERVAL_MS :
-                                             TEACHER_SYNC_INTERVAL_MS);
+            this.userRole === ROLE.STUDENT ? STUDENT_SYNC_INTERVAL_MS * antiDdosMultiplier :
+                                             TEACHER_SYNC_INTERVAL_MS * antiDdosMultiplier);
       }
 
   tickLoop = () => {
@@ -386,7 +389,7 @@ class CodeEditor {
       this.ticksUntilPush -= 1;
     }
 
-    if (this.ticksSinceLastRefreshCount > 100) {
+    if (this.ticksSinceLastRefreshCount > SERVER_LAG_MONITORING_PERIOD_TICKS) {
       this.ticksSinceLastRefreshCount = 0;
       console.log("Num refreshes:", this.numRefreshesSinceLastCount);
       this.numRefreshesSinceLastCount = 0;
