@@ -2,7 +2,7 @@ const ROLE = Object.freeze({STUDENT: 0, TEACHER: 1});
 const NEWLINE = '<br/>';
 
 // Config variables
-const IS_PROD = true;
+const IS_PROD = false;
 const SERVER_URL =
     IS_PROD ? 'https://csinenglish.herokuapp.com' : 'http://localhost:3000';
 const STUDENT_VERSION_INCREMENT = 1;
@@ -135,33 +135,51 @@ class CodeEditor {
       }
 
   renderStudentButtons =
-      () => {
+    () => {
+      // Get existing button list
+      let oldList = [];
+      for (const btn of this.studentButtonContainer.childNodes) {
+        oldList.push(btn.innerHTML);
+      }
+
+      // Check for a room filter
+      const breakoutSelect = document.getElementById('ta-room-select');
+      const taRoom = breakoutSelect.value;
+
+      // Get new list
+      let newList = [];
+      for (const student of Object.keys(this.codeMap).sort()) {
+        const [studentRoom, studentName] = student.split(" | ");
+        if (studentRoom !== taRoom && taRoom !== "(all rooms)") {
+          console.log("Skipping...", studentRoom, taRoom);
+          continue;
+        }
+        newList.push(student);
+      }
+
+      console.log("New", newList, "Old", oldList);
+      if (JSON.stringify(newList.map(x => x.split(" | ")[1])) !== JSON.stringify(oldList)) {
+        console.log("RE_RENDER");
         // Clear existing buttons
         while (this.studentButtonContainer.firstChild) {
           this.studentButtonContainer.removeChild(
-              this.studentButtonContainer.firstChild);
+            this.studentButtonContainer.firstChild);
         }
 
-        // Check for a room filter
-        const breakoutSelect = document.getElementById('ta-room-select');
-        const taRoom = breakoutSelect.value;
-
         // Render new buttons
-        for (const student of Object.keys(this.codeMap).sort()) {
+        for (const student of newList) {
           const [studentRoom, studentName] = student.split(" | ");
-          if (studentRoom !== taRoom && taRoom !== "(all rooms)") {
-            console.log("Skipping...", studentRoom, taRoom);
-            continue;
-          }
           const button = document.createElement('button');
           button.innerHTML = studentName;
           button.onclick = () => {
+            console.log("onclick");
             this.setUserName(student);
             this.studentCodeTitle.innerHTML = `${student}'s Code:`
           };
           this.studentButtonContainer.appendChild(button);
         }
       }
+    }
 
   /** Uses the Prism library to render code with syntax highlighting */
   renderCodeWithSyntaxHighlighting =
@@ -235,10 +253,13 @@ class CodeEditor {
         if (this.codeMap !== null && this.codeMap.hasOwnProperty(newName)) {
           const [remoteVersion, remoteCode] = this.codeMap[this.userName];
           this.loadCode(remoteVersion, remoteCode)
+        } else {
+          console.log("Set user name, not loading from map")
+          // Schedule an initial push to show that the user is present
+          if (this.userRole == ROLE.STUDENT) {
+            this.schedulePush();
+          }
         }
-
-        // Schedule an initial push to show that the user is present
-        this.schedulePush();
       }
 
   showOutput =
