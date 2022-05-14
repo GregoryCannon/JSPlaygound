@@ -10,8 +10,8 @@ const STUDENT_VERSION_INCREMENT = 1;
 // marker that a teacher was the last editor.
 const TEACHER_VERSION_INCREMENT = 100.1;
 const LOAD_SAMPLE_CODE_INCREMENT = 1000;
-const STUDENT_SYNC_INTERVAL_MS = 200;
-const TEACHER_SYNC_INTERVAL_MS = 200;
+const STUDENT_SYNC_INTERVAL_MS = 100;
+const TEACHER_SYNC_INTERVAL_MS = 100;
 const EDIT_TO_PUSH_DELAY_MS = 500;
 const TICK_MS = 100;
 
@@ -291,13 +291,12 @@ class CodeEditor {
         fetch(SERVER_URL + '/data')
             .then(response => response.json())
             .then((newMap) => {
-              console.log('Fetched', this.userRole, this.codeMap);
+              console.log('Fetched', this.userRole);
               // Pull code
               if (newMap.hasOwnProperty(this.userName)) {
                 const [remoteVersion, remoteCode] = newMap[this.userName];
 
                 // Maybe load code
-                console.log("Maybe loading,", remoteVersion, this.codeVersion);
                 if (remoteVersion > this.codeVersion) {
                   this.loadCode(remoteVersion, remoteCode)
                 }
