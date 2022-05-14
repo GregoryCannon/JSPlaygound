@@ -142,10 +142,19 @@ class CodeEditor {
               this.studentButtonContainer.firstChild);
         }
 
+        // Check for a room filter
+        const breakoutSelect = document.getElementById('ta-room-select');
+        const taRoom = breakoutSelect.value;
+
         // Render new buttons
         for (const student of Object.keys(this.codeMap).sort()) {
+          const [studentRoom, studentName] = student.split(" | ");
+          if (studentRoom !== taRoom && taRoom !== "(all rooms)") {
+            console.log("Skipping...", studentRoom, taRoom);
+            continue;
+          }
           const button = document.createElement('button');
-          button.innerHTML = student;
+          button.innerHTML = studentName;
           button.onclick = () => {
             this.setUserName(student);
             this.studentCodeTitle.innerHTML = `${student}'s Code:`
@@ -202,9 +211,9 @@ class CodeEditor {
 
         setTimeout(() => {
           const code = codeTextArea.value;
-          console.log(code);
+          console.log('\nOriginal code:\n' + code);
           const newCode = this.recompileCode(code);
-          console.log(newCode);
+          console.log('\nGenerated code:\n' + newCode);
 
           try {
             eval(newCode);

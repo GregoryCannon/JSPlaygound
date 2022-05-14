@@ -7,44 +7,70 @@
 </head>
 
 <body id="student-body">
-    <h1>CS in English: Javascript Playground</h1>
-    <h6>This page contains a custom Javascript interpreter. <br />Notably has the addition of a print() function, to
-        avoid dealing with the developer console. <br /><a href="/ta.html">Go To TA View</a></h6>
-    <br>Your Name:
-    <span id=user-name></span>
+    <h1>CS in English: Student View</h1>
+    <div id="login-form">
+        <h3>Select your breakout room and name!</h3>
+        <br />
+        <label for="room-select">Breakout Room:</label>
+        <select id="room-select">
+            <option selected disabled></option>
+            <option>L1-1</option>
+            <option>L1-2</option>
+            <option>L2-1</option>
+            <option>L2-2</option>
+            <option>L2-3</option>
+        </select>
+        <br />
+        <label for="name-select">Name:</label>
+        <select id="name-select">
+            <option selected disabled></option>
+            <option>Ryuko</option>
+            <option>Kenji</option>
+            <option>Greg</option>
+            <option>Tomo</option>
+        </select>
+        <br />
+        <button id="login-button">Get Started!</button>
+    </div>
+    <div id="logged-in-view">
+        <h6>This page contains a custom Javascript interpreter. <br />Notably has the addition of a print() function, to
+            avoid dealing with the developer console. <br /><a href="/ta.html">Go To TA View</a></h6>
+        <br>Your Name:
+        <span id=user-name></span>
 
-    <div class=" section" id="editor-area">
-        <h2>Code</h2>
-        <h4>Examples</h4>
-        <div id="presets">
-            <!-- Buttons added programmatically -->
-        </div>
-
-        <h4>Activities</h4>
-        <div id="activities">
-            <!-- Buttons added programmatically -->
-        </div>
-
-        <div id="instructions"></div>
-
-        <div id="code-container">
-            <textarea id="code-area" placeholder="Enter code here!"></textarea>
-            <div id="rendered-code-container">
+        <div class=" section" id="editor-area">
+            <h2>Code</h2>
+            <h4>Examples</h4>
+            <div id="presets">
+                <!-- Buttons added programmatically -->
             </div>
 
+            <h4>Activities</h4>
+            <div id="activities">
+                <!-- Buttons added programmatically -->
+            </div>
+
+            <div id="instructions"></div>
+
+            <div id="code-container">
+                <textarea id="code-area" placeholder="Enter code here!"></textarea>
+                <div id="rendered-code-container">
+                </div>
+
+            </div>
+            <div id="teacher-edit-notification">A teacher has edited your code.</div>
+            <button id="run-button">Run Code!</button>
         </div>
-        <div id="teacher-edit-notification">A teacher has edited your code.</div>
-        <button id="run-button">Run Code!</button>
-    </div>
 
-    <div class="section">
-        <h1>Output</h1>
-        <div id="output-div"><br /></div>
+        <div class="section">
+            <h1>Output</h1>
+            <div id="output-div"><br /></div>
+        </div>
     </div>
-
 </body>
 
 <script src="prism/prism.js"></script>
+<script src="students.js"></script>
 <script src="code-editor.js"></script>
 <script src="index.js"></script>
 

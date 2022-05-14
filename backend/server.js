@@ -29,10 +29,6 @@ app.get('/data', function(req, res) {
   res.end(JSON.stringify(codeMap));
 });
 
-// app.get("/", function (req, res) {
-//   res.sendFile(path.join(__dirname, "../client/index.html"));
-// })
-
 app.post('/', function(req, res) {
   console.log(req.body);
   const name = req.body.name;

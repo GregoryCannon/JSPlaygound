@@ -10,7 +10,9 @@ const activitiesContainer = document.getElementById('activities');
 const teacherEditNotification =
     document.getElementById('teacher-edit-notification');
 
-
+const breakoutSelect = document.getElementById('room-select');
+const nameSelect = document.getElementById('name-select');
+    
 const SAMPLES = [
   {
     title: 'Using print()',
@@ -91,6 +93,45 @@ const ACTIVITIES = [
   },
 ];
 
+function loadBreakoutRooms() {
+  const rooms = Object.keys(roomStudentLookup);
+  rooms.sort((a, b) => {
+    const [a_, a1, a2] = a.split(/-|L/g);
+    const [b_, b1, b2] = b.split(/-|L/g);
+    return (a1 * 100 + a2) - (b1 * 100 + b2);
+  });
+  // Remove all student options
+  while (breakoutSelect.firstChild) {
+    breakoutSelect.removeChild(breakoutSelect.firstChild);
+  }
+  // Add the appropriate options
+  for (const room of rooms) {
+    const option = document.createElement("option");
+    option.innerHTML = room;
+    breakoutSelect.appendChild(option);
+  }
+}
+loadBreakoutRooms();
+
+function onSelectBreakoutRoom() {
+  console.log("rerendering options")
+  const curRoom = breakoutSelect.value;
+  const students = roomStudentLookup[curRoom];
+  console.log(students);
+  // Remove all student options
+  while (nameSelect.firstChild) {
+    nameSelect.removeChild(nameSelect.firstChild);
+  }
+  // Add the appropriate options
+  for (const student of students) {
+    const option = document.createElement("option");
+    option.innerHTML = student;
+    nameSelect.appendChild(option);
+  }
+}
+
+breakoutSelect.addEventListener("change", onSelectBreakoutRoom);
+
 function loadSample(i) {
   document.getElementById('instructions').innerHTML =
       SAMPLES[i].instructions || '';
@@ -113,9 +154,24 @@ function promptForUserName() {
   editor.setUserName(userName);
 }
 
+function login() {
+  if (breakoutSelect.value && nameSelect.value) {
+    const userName = breakoutSelect.value + ' | ' + nameSelect.value;
+    document.getElementById('user-name').innerHTML = userName;
+    editor.setUserName(userName);
+
+    document.getElementById('logged-in-view').style.visibility = 'visible';
+    document.getElementById('login-form').style.display = 'none';
+  } else {
+    alert('Breakout room or name missing.')
+  }
+}
+
 /* ------------------
     Script start
   ----------------- */
+
+document.getElementById('login-button').addEventListener('click', login);
 
 SAMPLES.forEach((sample, i) => {
   if (sample === 'newline') {
@@ -144,4 +200,4 @@ const editor = new CodeEditor(
     /* studentButtonContainer= */ null, /* studentCodeTitle= */ null,
     teacherEditNotification);
 
-setTimeout(promptForUserName, 10);
+// setTimeout(promptForUserName, 10);

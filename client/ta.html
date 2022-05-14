@@ -9,6 +9,15 @@
 <body id='ta-body'>
   <h1>CS in English: TA View</h1>
   <h6>Click on a student's name to see their code.</h6>
+  <label for="room-select">Breakout Room:</label>
+  <select id="ta-room-select">
+    <option selected disabled></option>
+    <option>L1-1</option>
+    <option>L1-2</option>
+    <option>L2-1</option>
+    <option>L2-2</option>
+    <option>L2-3</option>
+  </select>
   <div id="students-container">
     <!-- Populated programmatically -->
   </div>
@@ -28,6 +37,7 @@
 </body>
 
 <script src="prism/prism.js"></script>
+<script src="students.js"></script>
 <script src="code-editor.js"></script>
 <script src="ta.js"></script>
 

@@ -8,7 +8,29 @@ const renderedCodeContainer =
     document.getElementById('rendered-code-container');
 const runCodeButton = document.getElementById('run-button');
 
+const breakoutSelect = document.getElementById('ta-room-select');
 
 const editor = new CodeEditor(
     ROLE.TEACHER, codeTextArea, codeContainer, renderedCodeContainer, outputDiv,
     studentButtonContainer, studentCodeTitle);
+
+function loadBreakoutRooms() {
+    const rooms = Object.keys(roomStudentLookup);
+    rooms.sort((a, b) => {
+        const [a_, a1, a2] = a.split(/-|L/g);
+        const [b_, b1, b2] = b.split(/-|L/g);
+        return (a1 * 100 + a2) - (b1 * 100 + b2);
+      });
+    rooms.unshift("(all rooms)");
+    // Remove all student options
+    while (breakoutSelect.firstChild) {
+        breakoutSelect.removeChild(breakoutSelect.firstChild);
+    }
+    // Add the appropriate options
+    for (const room of rooms) {
+        const option = document.createElement("option");
+        option.innerHTML = room;
+        breakoutSelect.appendChild(option);
+    }
+}
+loadBreakoutRooms();
