@@ -157,9 +157,8 @@ class CodeEditor {
         newList.push(student);
       }
 
-      console.log("New", newList, "Old", oldList);
       if (JSON.stringify(newList.map(x => x.split(" | ")[1])) !== JSON.stringify(oldList)) {
-        console.log("RE_RENDER");
+        console.log("RE_RENDER BUTTONS");
         // Clear existing buttons
         while (this.studentButtonContainer.firstChild) {
           this.studentButtonContainer.removeChild(
@@ -292,12 +291,13 @@ class CodeEditor {
         fetch(SERVER_URL + '/data')
             .then(response => response.json())
             .then((newMap) => {
-              console.log('Fetched', this.userRole);
+              console.log('Fetched', this.userRole, this.codeMap);
               // Pull code
               if (newMap.hasOwnProperty(this.userName)) {
                 const [remoteVersion, remoteCode] = newMap[this.userName];
 
                 // Maybe load code
+                console.log("Maybe loading,", remoteVersion, this.codeVersion);
                 if (remoteVersion > this.codeVersion) {
                   this.loadCode(remoteVersion, remoteCode)
                 }
