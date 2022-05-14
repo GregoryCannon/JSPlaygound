@@ -296,7 +296,7 @@ class CodeEditor {
             const [newMap, serverLagMultiplier] = array;
             antiDdosMultiplier = serverLagMultiplier;
 
-              console.log('Fetched', this.userRole);
+              console.log('Fetched', antiDdosMultiplier);
               this.numRefreshesSinceLastCount += 1;
               // Pull code
               if (newMap.hasOwnProperty(this.userName)) {
