@@ -14,50 +14,62 @@ const editor = new CodeEditor(
     ROLE.TEACHER, codeTextArea, codeContainer, renderedCodeContainer, outputDiv,
     studentButtonContainer, studentCodeTitle);
 
+// Get a list of breakout rooms
 function loadBreakoutRooms() {
-    const rooms = Object.keys(roomStudentLookup);
-    rooms.sort((a, b) => {
-        const [a_, a1, a2] = a.split(/-|L/g);
-        const [b_, b1, b2] = b.split(/-|L/g);
-        return (a1 * 100 + a2) - (b1 * 100 + b2);
-      });
-    rooms.unshift("(all rooms)");
-    // Remove all student options
-    while (breakoutSelect.firstChild) {
-        breakoutSelect.removeChild(breakoutSelect.firstChild);
-    }
-    // Add the appropriate options
-    for (const room of rooms) {
-        const option = document.createElement("option");
-        option.innerHTML = room;
-        breakoutSelect.appendChild(option);
-    }
+  const rooms = Object.keys(roomStudentLookup);
+  // Custom sort for the rooms, given that they are in the format L1-4, L2-5,
+  // etc.
+  rooms.sort((a, b) => {
+    const [a_, a1, a2] = a.split(/-|L/g);
+    const [b_, b1, b2] = b.split(/-|L/g);
+    return (a1 * 100 + a2) - (b1 * 100 + b2);
+  });
+  // Add an option to see all students from all rooms
+  rooms.unshift('(all rooms)');
+
+  // Remove all existing options and add from the new list
+  while (breakoutSelect.firstChild) {
+    breakoutSelect.removeChild(breakoutSelect.firstChild);
+  }
+  for (const room of rooms) {
+    const option = document.createElement('option');
+    option.innerHTML = room;
+    breakoutSelect.appendChild(option);
+  }
 }
+
+// Add a button on the teacher-only site that can adjust the clients' refresh
+// rate if the server is getting overloaded
+document.getElementById('anti-ddos').addEventListener('click', () => {
+  const newVal = parseFloat(prompt(
+      'IF YOU DON\'T KNOW WHAT THIS IS, CLICK CANCEL NOW.\nOr, enter the new emergency client refresh rate multiplier:'));
+  const body = {multiplier: newVal};
+  if (newVal >= 0.5 && newVal <= 10) {
+    // Send post request to server updating the anti-DDOS multiplier
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', SERVER_URL + '/ddos', true);
+
+    // Send the proper header information along with the request
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    // Call a function when the state changes.
+    xhr.onreadystatechange = function() {
+      if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+        console.log('Updated server anti-DDOS multiplier');
+      }
+    };
+
+    // Send the request
+    xhr.send(JSON.stringify(body));
+  }
+})
+
+/* -------------------
+---  Script start  ---
+-------------------- */
+
 loadBreakoutRooms();
 
-breakoutSelect.addEventListener("change", editor.renderStudentButtons);
-
-
-document.getElementById("anti-ddos").addEventListener("click", () => {
-    const newVal = parseFloat(prompt("IF YOU DON'T KNOW WHAT THIS IS, CLICK CANCEL NOW.\nEnter new multiplier:"));
-    const body = { multiplier: newVal };
-    if (newVal > 0.5 && newVal < 10) {
-        // Send post request to server updating the anti-DDOS multiplier
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', SERVER_URL + "/ddos", true);
-
-        // Send the proper header information along with the request
-        xhr.setRequestHeader('Content-Type', 'application/json');
-
-        // Call a function when the state changes.
-        xhr.onreadystatechange = function() {
-          if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-              console.log("Updated server anti-DDOS multiplier");
-          }
-        };
-
-        // Send the request
-        xhr.send(JSON.stringify(body));
-    }
-
-})
+// When the teacher changes what breakout room they have selected, render only
+// students in that room
+breakoutSelect.addEventListener('change', editor.renderStudentButtons);

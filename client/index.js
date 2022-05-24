@@ -12,7 +12,7 @@ const teacherEditNotification =
 
 const breakoutSelect = document.getElementById('room-select');
 const nameSelect = document.getElementById('name-select');
-    
+
 const SAMPLES = [
   {
     title: 'Using print()',
@@ -106,7 +106,7 @@ function loadBreakoutRooms() {
   }
   // Add the appropriate options
   for (const room of rooms) {
-    const option = document.createElement("option");
+    const option = document.createElement('option');
     option.innerHTML = room;
     breakoutSelect.appendChild(option);
   }
@@ -120,20 +120,35 @@ function onSelectBreakoutRoom() {
   while (nameSelect.firstChild) {
     nameSelect.removeChild(nameSelect.firstChild);
   }
-  const nullOption = document.createElement("option");
+  const nullOption = document.createElement('option');
   nullOption.disabled = true;
-  nullOption.innerHTML = "(select)"
+  nullOption.innerHTML = '(select)'
   nullOption.selected = true;
   nameSelect.appendChild(nullOption);
   // Add the appropriate options
   for (const student of students) {
-    const option = document.createElement("option");
+    const option = document.createElement('option');
     option.innerHTML = student;
     nameSelect.appendChild(option);
   }
+  const otherOption = document.createElement('option');
+  otherOption.innerHTML('Other');
+  otherOption.id = 'otherOption'
+  nameSelect.appendChild(otherOption);
 }
 
-breakoutSelect.addEventListener("change", onSelectBreakoutRoom);
+function onSelectName() {
+  if (nameSelect.id == 'otherOption') {
+    const newName = prompt('Enter your name');
+    if (newName) {
+      document.getElementById('otherOption').innerHTML = newName;
+    }
+  }
+}
+
+breakoutSelect.addEventListener('change', onSelectBreakoutRoom);
+nameSelect.addEventListener('change', onSelectName);
+onSelectBreakoutRoom();
 
 function loadSample(i) {
   document.getElementById('instructions').innerHTML =

@@ -5,17 +5,29 @@ const NEWLINE = '<br/>';
 const IS_PROD = true;
 const SERVER_URL =
     IS_PROD ? 'https://csinenglish.herokuapp.com' : 'http://localhost:3000';
+
+// Every time the student edits, the version is incremented by 1
 const STUDENT_VERSION_INCREMENT = 1;
 // The version is rounded before incrementing so the .1 exists as a
 // marker that a teacher was the last editor.
 const TEACHER_VERSION_INCREMENT = 100.1;
+// Every time a code sample is loaded, the version increments to a round
+// multiple of this increment
 const LOAD_SAMPLE_CODE_INCREMENT = 1000;
+
+// How often students and teachers should pull from the server. Can be
+// configured to match the server's capacity.
 const STUDENT_SYNC_INTERVAL_MS = 2500;
 const TEACHER_SYNC_INTERVAL_MS = 1000;
-const EDIT_TO_PUSH_DELAY_MS = 500;
-const TICK_MS = 100;
-const SERVER_LAG_MONITORING_PERIOD_TICKS = 100;
+// Multiplier for sync intervals that can be edited in real-time if the server
+// is under heavy load
 let antiDdosMultiplier = 1.0;
+// The delay between the last keystroke and pushing to the server
+const EDIT_TO_PUSH_DELAY_MS = 500;
+// How ofton to check if a sync with the server is needed
+const TICK_MS = 100;
+// Counter in ticks until the page should collect metrics on server connectivity
+const SERVER_LAG_MONITORING_PERIOD_TICKS = 100;
 
 function allowTabbing(textarea, onTabCallback) {
   // Allow tabbing in the code editor
@@ -25,11 +37,11 @@ function allowTabbing(textarea, onTabCallback) {
       var start = this.selectionStart;
       var end = this.selectionEnd;
 
-      // set textarea value to: text before caret + tab + text after caret
+      // Set textarea value to: text before caret + tab + text after caret
       this.value =
           this.value.substring(0, start) + '\t' + this.value.substring(end);
 
-      // put caret at right position again
+      // Put caret at right position again
       this.selectionStart = this.selectionEnd = start + 1;
 
       onTabCallback();
@@ -86,7 +98,8 @@ class CodeEditor {
         console.log('New version', this.codeVersion);
       }
 
-  loadCode =
+  /** Loads any code into the UI. */
+  loadCodeToUi =
       (newVersion, newCode) => {
         this.codeTextArea.value = newCode;
         this.codeVersion = newVersion;
@@ -94,16 +107,25 @@ class CodeEditor {
         this.outputDiv.innerHTML = '';
       }
 
+  /** Loads a piece of starter code to the UI. */
   loadSampleCode =
       (newCode) => {
-        // Set to the next clean multiple of the LOAD_SAMPLE_CODE_INCREMENT
-        const newVersion = LOAD_SAMPLE_CODE_INCREMENT *
-            (Math.floor((this.codeVersion - 0.001) / LOAD_SAMPLE_CODE_INCREMENT) + 1);
-        this.loadCode(newVersion, newCode);
+        // Set version to the next clean multiple of the
+        // LOAD_SAMPLE_CODE_INCREMENT
+        const nextMultiple = (num, base) =>
+            base * (Math.floor(num - 0.000001) / base + 1)
+        const newVersion =
+            nextMultiple(this.codeVersion, LOAD_SAMPLE_CODE_INCREMENT);
+
+        this.loadCodeToUi(newVersion, newCode);
         this.hasChangedCode = true;
         this.schedulePush();
       }
 
+  /**
+     Callback when the code is edited, either by the user or by a server
+     update.
+   */
   onCodeChanged =
       (byUser) => {
         if (byUser) {
@@ -112,7 +134,6 @@ class CodeEditor {
         } else {
           // Local changes were overwritten
           this.hasChangedCode = false;
-          // console.log('hasChangedCode = false, overwritten');
         }
 
         // Maybe show a notification that a teacher has edited your code
@@ -122,7 +143,6 @@ class CodeEditor {
             this.remoteEditNotificationText.style.visibility = 'visible';
           } else {
             this.remoteEditNotificationText.style.visibility = 'hidden';
-            // console.log(this.codeVersion);
           }
         }
 
@@ -138,49 +158,53 @@ class CodeEditor {
         this.onCodeChanged(/* byUser= */ true);
       }
 
+  /**
+     (For teachers only) Renders a list of students, filtered by what room the
+     teacher has selected.
+   */
   renderStudentButtons =
-    () => {
-      // Get existing button list
-      let oldList = [];
-      for (const btn of this.studentButtonContainer.childNodes) {
-        oldList.push(btn.innerHTML);
-      }
-
-      // Check for a room filter
-      const breakoutSelect = document.getElementById('ta-room-select');
-      const taRoom = breakoutSelect.value;
-
-      // Get new list
-      let newList = [];
-      for (const student of Object.keys(this.codeMap).sort()) {
-        const [studentRoom, studentName] = student.split(" | ");
-        if (studentRoom !== taRoom && taRoom !== "(all rooms)") {
-          continue;
-        }
-        newList.push(student);
-      }
-
-      if (JSON.stringify(newList.map(x => x.split(" | ")[1])) !== JSON.stringify(oldList)) {
-        // Clear existing buttons
-        while (this.studentButtonContainer.firstChild) {
-          this.studentButtonContainer.removeChild(
-            this.studentButtonContainer.firstChild);
+      () => {
+        // Get existing button list
+        let oldList = [];
+        for (const btn of this.studentButtonContainer.childNodes) {
+          oldList.push(btn.innerHTML);
         }
 
-        // Render new buttons
-        for (const student of newList) {
-          const [studentRoom, studentName] = student.split(" | ");
-          const button = document.createElement('button');
-          button.innerHTML = studentName;
-          button.onclick = () => {
-            console.log("onclick");
-            this.setUserName(student);
-            this.studentCodeTitle.innerHTML = `${student}'s Code:`
-          };
-          this.studentButtonContainer.appendChild(button);
+        // Check for a room filter
+        const breakoutSelect = document.getElementById('ta-room-select');
+        const taRoom = breakoutSelect.value;
+
+        // Get new list
+        let newList = [];
+        for (const student of Object.keys(this.codeMap).sort()) {
+          const [studentRoom, studentName] = student.split(' | ');
+          if (studentRoom !== taRoom && taRoom !== '(all rooms)') {
+            continue;
+          }
+          newList.push(student);
+        }
+
+        if (JSON.stringify(newList.map(x => x.split(' | ')[1])) !==
+            JSON.stringify(oldList)) {
+          // Clear existing buttons
+          while (this.studentButtonContainer.firstChild) {
+            this.studentButtonContainer.removeChild(
+                this.studentButtonContainer.firstChild);
+          }
+
+          // Render new buttons
+          for (const student of newList) {
+            const [studentRoom, studentName] = student.split(' | ');
+            const button = document.createElement('button');
+            button.innerHTML = studentName;
+            button.onclick = () => {
+              this.setUserName(student);
+              this.studentCodeTitle.innerHTML = `${student}'s Code:`
+            };
+            this.studentButtonContainer.appendChild(button);
+          }
         }
       }
-    }
 
   /** Uses the Prism library to render code with syntax highlighting */
   renderCodeWithSyntaxHighlighting =
@@ -204,6 +228,11 @@ class CodeEditor {
         Prism.highlightElement(code);
       }
 
+  /**
+     Make some modifications to the code to prepare it for running on the site.
+     Notably, implement the 'print' function using a slightly suspicious regex
+     replacement.
+   */
   recompileCode =
       (code) => {
         let newString = 'let output = "";\n'
@@ -223,6 +252,7 @@ class CodeEditor {
         return newString;
       }
 
+  /** Execute the code in the text area. */
   runCode =
       () => {
         // Clear old output
@@ -242,6 +272,7 @@ class CodeEditor {
         }, 300);
       }
 
+  /** Set the name of the student whose code is being edited. */
   setUserName =
       (newName) => {
         this.userName = newName;
@@ -253,9 +284,9 @@ class CodeEditor {
         // Maybe load their code from the map
         if (this.codeMap !== null && this.codeMap.hasOwnProperty(newName)) {
           const [remoteVersion, remoteCode] = this.codeMap[this.userName];
-          this.loadCode(remoteVersion, remoteCode)
+          this.loadCodeToUi(remoteVersion, remoteCode)
         } else {
-          console.log("Set user name, not loading from map")
+          console.log('Set user name, not loading from map')
           // Schedule an initial push to show that the user is present
           if (this.userRole == ROLE.STUDENT) {
             this.schedulePush();
@@ -263,6 +294,10 @@ class CodeEditor {
         }
       }
 
+  /**
+   * Display output from the user's code in a div on the webpage
+   * @param {string} outputStr
+   */
   showOutput =
       (outputStr) => {
         if (outputStr.indexOf(NEWLINE) == 0) {
@@ -275,7 +310,12 @@ class CodeEditor {
         }
       }
 
-
+  /**
+   * Align the heights and widths of all the elements related to the text area.
+   * @param {*} element - the main text area
+   * @param {*} syncedElements - all elements whose size follows that of the
+   *     main text area
+   */
   textAreaAdjust =
       (element, syncedElements) => {
         element.style.height = '1px';
@@ -292,19 +332,19 @@ class CodeEditor {
       () => {
         fetch(SERVER_URL + '/data')
             .then(response => response.json())
-          .then((array) => {
-            const [newMap, serverLagMultiplier] = array;
-            antiDdosMultiplier = serverLagMultiplier;
+            .then((array) => {
+              const [newMap, serverLagMultiplier] = array;
+              antiDdosMultiplier = serverLagMultiplier;
 
-              console.log('Fetched', antiDdosMultiplier);
+              console.log('Fetched. Refresh multiplier =', antiDdosMultiplier);
               this.numRefreshesSinceLastCount += 1;
               // Pull code
               if (newMap.hasOwnProperty(this.userName)) {
                 const [remoteVersion, remoteCode] = newMap[this.userName];
 
-                // Maybe load code
+                // Maybe load code to the UI
                 if (remoteVersion > this.codeVersion) {
-                  this.loadCode(remoteVersion, remoteCode)
+                  this.loadCodeToUi(remoteVersion, remoteCode)
                 }
 
                 // If teacher, maybe overwrite student code
@@ -335,7 +375,6 @@ class CodeEditor {
               },
               () => {console.log('Posted to server.')});
           this.hasChangedCode = false;
-          // console.log('hasChangedCode = false, pushed');
         }
       }
 
@@ -376,8 +415,9 @@ class CodeEditor {
         // Auto-loop
         setTimeout(
             this.syncWithServer,
-            this.userRole === ROLE.STUDENT ? STUDENT_SYNC_INTERVAL_MS * antiDdosMultiplier :
-                                             TEACHER_SYNC_INTERVAL_MS * antiDdosMultiplier);
+            antiDdosMultiplier *
+                (this.userRole === ROLE.STUDENT ? STUDENT_SYNC_INTERVAL_MS :
+                                                  TEACHER_SYNC_INTERVAL_MS));
       }
 
   tickLoop = () => {
@@ -391,7 +431,7 @@ class CodeEditor {
 
     if (this.ticksSinceLastRefreshCount > SERVER_LAG_MONITORING_PERIOD_TICKS) {
       this.ticksSinceLastRefreshCount = 0;
-      console.log("Num refreshes:", this.numRefreshesSinceLastCount);
+      console.log('Num refreshes:', this.numRefreshesSinceLastCount);
       this.numRefreshesSinceLastCount = 0;
     }
     this.ticksSinceLastRefreshCount += 1;
