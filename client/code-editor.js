@@ -66,11 +66,21 @@ class CodeEditor {
     this.remoteEditNotificationText = remoteEditNotificationText;
     this.getIsUnitTestSetup = getIsUnitTestSetup;
 
+    // HACKKK
+    this.testCasesContainer = document.getElementById("test-cases");
+
     // UI Setup
     this.codeTextArea.style.visibility = 'hidden';
+    this.testCasesContainer.style.display = 'none';
 
     // Event listeners
     codeTextArea.addEventListener('input', this.onCodeChangedByUser);
+    for (let i = 0; i < NUM_TEST_CASES; i++){
+      const caseElt = document.getElementById("case-" + i);
+      const answerElt = document.getElementById("answer-" + i);
+      caseElt.addEventListener('input', this.onCodeChangedByUser);
+      answerElt.addEventListener('input', this.onCodeChangedByUser);
+    }
     runCodeButton.addEventListener('click', this.runCode);
     allowTabbing(codeTextArea, this.onCodeChangedByUser);
 
@@ -331,6 +341,7 @@ class CodeEditor {
 
       if (newName) {
         this.codeTextArea.style.visibility = 'visible';
+        this.testCasesContainer.style.display = "block";
       }
 
       // Maybe load their code from the map
