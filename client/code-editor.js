@@ -154,7 +154,7 @@ class CodeEditor {
     for (let i = 0; i < NUM_TEST_CASES; i++) {
       const baseCode = codeTextArea.value.replace(/print/g, "");
       const testCode = document.getElementById("case-" + i).value;
-      if (!testCode){
+      if (!testCode || testCode === " "){
         output.innerHTML = "";
         output.parentElement.style.background = "transparent";
         continue;
