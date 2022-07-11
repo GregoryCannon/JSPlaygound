@@ -3,11 +3,15 @@
 }
 
 #login-form {
-    background: #d1ebff;
     font-size: 24px;
-    margin: 200px;
     max-width: 700px;
+    padding: 100px;
+}
+
+.session-container {
+    background: #d1ebff;
     padding: 40px;
+    margin-bottom: 100px;
 }
 
 select {
@@ -18,7 +22,7 @@ option :disabled {
     color: #8eccff;
 }
 
-#login-button {
+.login-button {
     margin-top: 40px;
     background: #8eccff;
     border: 1px solid black;
@@ -32,7 +36,7 @@ body {
     padding: 0 10px;
 }
 
-#name-input {
+#name-select {
     font-size: 24px;
 }
 
@@ -202,3 +206,29 @@ textarea {
 #ta-body {
     background: #fff1e9;
 }
+
+#test-cases textarea{
+    width: 280px;
+    word-wrap: initial;
+}
+
+#test-cases div {
+    max-width: 700px;
+    padding: 10px 20px;
+    margin-bottom: 8px;
+}
+
+#test-cases > div > div {
+    /* margin-bottom: 5px; */
+    margin: 0px;
+    padding: 0px;
+}
+/* #test-cases {
+    display: flex;
+    flex-direction: row;
+    flex-w
+}
+
+#test-cases * {
+    flex: 1
+} */

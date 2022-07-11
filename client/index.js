@@ -13,6 +13,8 @@ const teacherEditNotification =
 const breakoutSelect = document.getElementById('room-select');
 const nameSelect = document.getElementById('name-select');
 
+let isUnitTestSetup = false;
+
 const SAMPLES = [
   {
     title: 'Using print()',
@@ -132,7 +134,7 @@ function onSelectBreakoutRoom() {
     nameSelect.appendChild(option);
   }
   const otherOption = document.createElement('option');
-  otherOption.innerHTML('Other');
+  otherOption.innerHTML = 'Other';
   otherOption.id = 'otherOption'
   nameSelect.appendChild(otherOption);
 }
@@ -146,9 +148,9 @@ function onSelectName() {
   }
 }
 
-breakoutSelect.addEventListener('change', onSelectBreakoutRoom);
-nameSelect.addEventListener('change', onSelectName);
-onSelectBreakoutRoom();
+// breakoutSelect.addEventListener('change', onSelectBreakoutRoom);
+// nameSelect.addEventListener('change', onSelectName);
+// onSelectBreakoutRoom();
 
 function loadSample(i) {
   document.getElementById('instructions').innerHTML =
@@ -173,23 +175,35 @@ function promptForUserName() {
 }
 
 function login() {
-  if (breakoutSelect.value && nameSelect.value) {
+  if (breakoutSelect.value && nameSelect.value || false) {
     const userName = breakoutSelect.value + ' | ' + nameSelect.value;
     document.getElementById('user-name').innerHTML = userName;
     editor.setUserName(userName);
 
     document.getElementById('logged-in-view').style.display = 'inline';
     document.getElementById('login-form').style.display = 'none';
+
+    isUnitTestSetup = true;
   } else {
-    alert('Breakout room or name missing.')
+    // alert('Breakout room or name missing.')
   }
 }
+
+function loginForReview() {
+  editor.setUserName("LOCAL-REVIEW");
+  document.getElementById('logged-in-view').style.display = 'inline';
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('test-cases').style.display = 'none';
+  isUnitTestSetup = false;
+}
+
 
 /* ------------------
     Script start
   ----------------- */
 
 document.getElementById('login-button').addEventListener('click', login);
+document.getElementById('review-login-button').addEventListener('click', loginForReview);
 
 SAMPLES.forEach((sample, i) => {
   if (sample === 'newline') {
@@ -213,9 +227,15 @@ ACTIVITIES.forEach((sample, i) => {
   activitiesContainer.appendChild(button);
 })
 
+// Function to let the code editor see the live value of this variable
+function getIsUnitTest(){
+  return isUnitTestSetup;
+}
+
 const editor = new CodeEditor(
     ROLE.STUDENT, codeTextArea, codeContainer, renderedCodeContainer, outputDiv,
     /* studentButtonContainer= */ null, /* studentCodeTitle= */ null,
-    teacherEditNotification);
+    teacherEditNotification, getIsUnitTest);
 
 // setTimeout(promptForUserName, 10);
+// login();
