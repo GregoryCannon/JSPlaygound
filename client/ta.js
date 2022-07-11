@@ -12,7 +12,7 @@ const breakoutSelect = document.getElementById('ta-room-select');
 
 const editor = new CodeEditor(
     ROLE.TEACHER, codeTextArea, codeContainer, renderedCodeContainer, outputDiv,
-    studentButtonContainer, studentCodeTitle, () => { return true; });
+    studentButtonContainer, studentCodeTitle, /* remoteEditNotificationText= */ null, () => { return true; });
 
 // Get a list of breakout rooms
 function loadBreakoutRooms() {

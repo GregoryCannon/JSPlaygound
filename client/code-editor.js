@@ -4,7 +4,7 @@ const NEWLINE = '<br/>';
 // Config variables
 const TEST_CONCAT_DELIM = "~`";
 const NUM_TEST_CASES = 5;
-const IS_PROD = true;
+const IS_PROD = false;
 const SERVER_URL =
   IS_PROD ? 'https://csinenglish.herokuapp.com' : 'http://localhost:3000';
 
@@ -155,6 +155,7 @@ class CodeEditor {
       const baseCode = codeTextArea.value.replace(/print/g, "");
       const testCode = document.getElementById("case-" + i).value;
       if (!testCode || testCode === " "){
+        const output = document.getElementById("output-" + i);
         output.innerHTML = "";
         output.parentElement.style.background = "transparent";
         continue;
