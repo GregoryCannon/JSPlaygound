@@ -4,7 +4,7 @@ const NEWLINE = '<br/>';
 // Config variables
 const TEST_CONCAT_DELIM = "~`";
 const NUM_TEST_CASES = 5;
-const IS_PROD = false;
+const IS_PROD = true;
 const SERVER_URL =
   IS_PROD ? 'https://csinenglish.herokuapp.com' : 'http://localhost:3000';
 
