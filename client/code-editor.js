@@ -151,9 +151,14 @@ class CodeEditor {
     }
 
   runTests = () => {
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 0; i < NUM_TEST_CASES; i++) {
       const baseCode = codeTextArea.value.replace(/print/g, "");
       const testCode = document.getElementById("case-" + i).value;
+      if (!testCode){
+        output.innerHTML = "";
+        output.parentElement.style.background = "transparent";
+        continue;
+      }
       const expectedAnswer = document.getElementById("answer-" + i).value;
       let realAnswer = "Error.";
       try {
