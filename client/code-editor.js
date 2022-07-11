@@ -2,7 +2,7 @@ const ROLE = Object.freeze({ STUDENT: 0, TEACHER: 1 });
 const NEWLINE = '<br/>';
 
 // Config variables
-const TEST_CONCAT_DELIM = "~~~";
+const TEST_CONCAT_DELIM = "~`";
 const NUM_TEST_CASES = 5;
 const IS_PROD = true;
 const SERVER_URL =
@@ -125,8 +125,8 @@ class CodeEditor {
         const caseElt = document.getElementById("case-" + i);
         const answerElt = document.getElementById("answer-" + i);
         if (caseElt && answerElt) {
-          caseElt.value = split[(2 * i) + 1] || " "
-          answerElt.value = split[(2 * i) + 2] || " "
+          caseElt.value = split[(2 * i) + 1] || ""
+          answerElt.value = split[(2 * i) + 2] || ""
         }
       }
 
