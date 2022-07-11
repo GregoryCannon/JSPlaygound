@@ -125,8 +125,8 @@ class CodeEditor {
         const caseElt = document.getElementById("case-" + i);
         const answerElt = document.getElementById("answer-" + i);
         if (caseElt && answerElt) {
-          caseElt.value = split[(2 * i) + 1] || ""
-          answerElt.value = split[(2 * i) + 2] || ""
+          caseElt.value = split[(2 * i) + 1] || " "
+          answerElt.value = split[(2 * i) + 2] || " "
         }
       }
 
