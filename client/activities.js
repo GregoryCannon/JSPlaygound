@@ -174,7 +174,7 @@ const ACTIVITIES_UNIT_TESTING = [
   {
     title: 'Warm-Up Activity',
     instructions: 'Can you add more tests for this double() function?',
-    code: '// Adds one to a number\nfunction double(number) {\n\treturn number * 2\n}'
+    code: '// Doubles a number\nfunction double(number) {\n\treturn number * 2\n}'
     + DELIM + 'double(5)' + DELIM + '10'
     + DELIM + 'double(0)' + DELIM + '0'
   },
