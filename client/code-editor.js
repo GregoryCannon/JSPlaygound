@@ -2,7 +2,6 @@ const ROLE = Object.freeze({ STUDENT: 0, TEACHER: 1 });
 const NEWLINE = '<br/>';
 
 // Config variables
-const TEST_CONCAT_DELIM = "~`";
 const NUM_TEST_CASES = 5;
 const IS_PROD = true;
 const SERVER_URL =
@@ -68,6 +67,7 @@ class CodeEditor {
 
     // HACKKK
     this.testCasesContainer = document.getElementById("test-cases");
+    this.outputContainer = document.getElementById("output-section")
 
     // UI Setup
     this.codeTextArea.style.visibility = 'hidden';
@@ -75,7 +75,7 @@ class CodeEditor {
 
     // Event listeners
     codeTextArea.addEventListener('input', this.onCodeChangedByUser);
-    for (let i = 0; i < NUM_TEST_CASES; i++){
+    for (let i = 0; i < NUM_TEST_CASES; i++) {
       const caseElt = document.getElementById("case-" + i);
       const answerElt = document.getElementById("answer-" + i);
       caseElt.addEventListener('input', this.onCodeChangedByUser);
@@ -146,24 +146,42 @@ class CodeEditor {
         nextMultiple(this.codeVersion, LOAD_SAMPLE_CODE_INCREMENT);
 
       this.loadCodeToUi(newVersion, newCode);
+      if (isUnitTestSetup){
+        this.resetTestResults();
+      }
       this.hasChangedCode = true;
       this.schedulePush();
     }
 
+  resetTestResults = () => {
+    for (let i = 0; i < NUM_TEST_CASES; i++) {
+      const output = document.getElementById("output-" + i);
+      output.innerHTML = "";
+      output.parentElement.style.background = "transparent";
+      continue;
+    }
+  }
+
   runTests = () => {
+    this.resetTestResults();
+
     for (let i = 0; i < NUM_TEST_CASES; i++) {
       const baseCode = codeTextArea.value.replace(/print/g, "");
       const testCode = document.getElementById("case-" + i).value;
-      if (!testCode || testCode === " "){
-        const output = document.getElementById("output-" + i);
-        output.innerHTML = "";
-        output.parentElement.style.background = "transparent";
+      if (!testCode || !baseCode){
         continue;
       }
-      const expectedAnswer = document.getElementById("answer-" + i).value;
+      const expectedAnswer = document.getElementById("answer-" + i).value.replace(/"|'/g, "");
       let realAnswer = "Error.";
       try {
-        realAnswer = eval(baseCode + ";" + testCode);
+        const result = eval(baseCode + "\n" + testCode);
+        if (result === undefined){
+          realAnswer = "undefined";
+        } else if (Number.isNaN(result)){
+          realAnswer = "Error, not a number";
+        } else {
+          realAnswer = result;
+        }
       } catch (e) {
         console.log(e);
       }
@@ -174,12 +192,14 @@ class CodeEditor {
       if (realAnswer.toString() === expectedAnswer.toString()) {
         output.innerHTML = "Test passed!";
         output.parentElement.style.background = "lightgreen";
-      } else if (isNaN(parseInt(realAnswer))) {
+      } 
+      else if (realAnswer === "Error.") {
         output.innerHTML = "Error while running!";
         output.parentElement.style.background = "#e18080";
-      } else {
+      } 
+      else {
         console.log("parse", parseInt(realAnswer));
-        output.innerHTML = `Test failed. Expected: ${expectedAnswer}, Got: ${realAnswer}`;
+        output.innerHTML = `Test failed. Expected: <em>${expectedAnswer}</em>, Got: <em>${realAnswer}</em>`;
         output.parentElement.style.background = "pink";
       }
     }
@@ -263,6 +283,7 @@ class CodeEditor {
           button.onclick = () => {
             this.setUserName(student);
             this.studentCodeTitle.innerHTML = `${student}'s Code:`
+            this.resetTestResults();
           };
           this.studentButtonContainer.appendChild(button);
         }

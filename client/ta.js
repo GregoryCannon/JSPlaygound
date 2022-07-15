@@ -2,6 +2,7 @@ const studentButtonContainer = document.getElementById('students-container');
 const studentCodeTitle = document.getElementById('student-code-title');
 
 const outputDiv = document.getElementById('output-div');
+const outputSection = document.getElementById('output-section');
 const codeTextArea = document.getElementById('code-area');
 const codeContainer = document.getElementById('code-container');
 const renderedCodeContainer =
@@ -69,6 +70,8 @@ document.getElementById('anti-ddos').addEventListener('click', () => {
 -------------------- */
 
 loadBreakoutRooms();
+
+outputSection.style.display = "none";
 
 // When the teacher changes what breakout room they have selected, render only
 // students in that room

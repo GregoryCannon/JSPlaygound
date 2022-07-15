@@ -185,6 +185,7 @@ textarea {
 #instructions {
     margin-top: 45px;
     margin-bottom: 20px;
+    font-weight: bold;
 }
 
 #student-code-title {
@@ -208,7 +209,7 @@ textarea {
 }
 
 #test-cases textarea{
-    width: 280px;
+    width: 320px;
     word-wrap: initial;
 }
 
