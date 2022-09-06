@@ -197,15 +197,20 @@ class CodeEditor {
         continue;
       }
       const expectedAnswer = document.getElementById("answer-" + i).value.replace(/"|'/g, "");
-      let realAnswer = "Error.";
+      const expectException = expectedAnswer.includes("Exception")
+      let realAnswer = "Exception - unknown error";
+      let gotException = true;
       try {
         const result = eval(baseCode + "\n" + testCode);
         if (result === undefined){
           realAnswer = "undefined";
+          gotException = false;
         } else if (Number.isNaN(result)){
-          realAnswer = "Error, not a number";
+          realAnswer = "Exception - result was not a number";
+          gotException = true;
         } else {
           realAnswer = result;
+          gotException = false;
         }
       } catch (e) {
         console.log(e);
@@ -214,17 +219,17 @@ class CodeEditor {
 
       const output = document.getElementById("output-" + i);
       output.style.fontWeight = "bold";
-      if (realAnswer.toString() === expectedAnswer.toString()) {
+      if (realAnswer.toString() === expectedAnswer.toString() || expectException && gotException) {
         output.innerHTML = "Test passed!";
         output.parentElement.style.background = "lightgreen";
       } 
-      else if (realAnswer === "Error.") {
-        output.innerHTML = "Error while running!";
+      else if (expectException && !gotException) {
+        output.innerHTML = "Got an exception when an exception was not expected";
         output.parentElement.style.background = "#e18080";
-      } 
+      }
       else {
-        console.log("parse", parseInt(realAnswer));
-        output.innerHTML = `Test failed. Expected: <em>${expectedAnswer}</em>, Got: <em>${realAnswer}</em>`;
+        console.log("parsed real answer", realAnswer, parseInt(realAnswer));
+        output.innerHTML = `Test failed. <br/>Expected: <em>${expectedAnswer}</em><br/>Got: <em>${realAnswer}</em>`;
         output.parentElement.style.background = "pink";
       }
     }
@@ -379,7 +384,7 @@ class CodeEditor {
           try {
             eval(newCode);
           } catch (error) {
-            this.showOutput('There was an error: ' + error.message);
+            this.showOutput('Exception - ' + error.message);
           }
         }, 300);
       }
