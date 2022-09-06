@@ -30,6 +30,9 @@ const TICK_MS = 100;
 // Counter in ticks until the page should collect metrics on server connectivity
 const SERVER_LAG_MONITORING_PERIOD_TICKS = 100;
 
+const DISABLED_TEXT_AREA_COLOR = "#efefef";
+const ENABLED_TEXT_AREA_COLOR = "#fff";
+
 function allowTabbing(textarea, onTabCallback) {
   // Allow tabbing in the code editor
   textarea.addEventListener('keydown', function (e) {
@@ -111,6 +114,26 @@ class CodeEditor {
       console.log('New version', this.codeVersion);
     }
 
+  /** 
+   * Loads a code segment into a text element, and maybe makes the text box not 
+   * editable depending on the presence of a "lock" indicator. 
+   */
+  loadCodeSegmentToTextBox = (newCode, textBoxElt) => {
+    if (newCode.substring(0, LOCK_MARKER.length) === LOCK_MARKER){
+      textBoxElt.readOnly = true;
+      textBoxElt.style.background = DISABLED_TEXT_AREA_COLOR;
+      textBoxElt.value = newCode.substring(LOCK_MARKER.length);
+    } else {
+      textBoxElt.readOnly = false;
+      textBoxElt.style.background = ENABLED_TEXT_AREA_COLOR;
+      textBoxElt.value = newCode;
+    }
+  }
+
+  getCodeSegmentFromTextBox = (textBoxElt) => {
+    return (textBoxElt.readOnly ? LOCK_MARKER : "") + textBoxElt.value
+  }
+
   /** Loads any code into the UI. */
   loadCodeToUi =
     (newVersion, newCode) => {
@@ -118,15 +141,17 @@ class CodeEditor {
       console.log("split code:", split);
 
       // Main component goes to main area
-      this.codeTextArea.value = split[0];
+      this.loadCodeSegmentToTextBox(split[0], this.codeTextArea);
 
       // Then load test components
       for (let i = 0; i < NUM_TEST_CASES; i++) {
         const caseElt = document.getElementById("case-" + i);
         const answerElt = document.getElementById("answer-" + i);
         if (caseElt && answerElt) {
-          caseElt.value = split[(2 * i) + 1] || ""
-          answerElt.value = split[(2 * i) + 2] || ""
+          const caseValue = split[(2 * i) + 1] || ""
+          const answerValue = split[(2 * i) + 2] || ""
+          this.loadCodeSegmentToTextBox(caseValue, caseElt)
+          this.loadCodeSegmentToTextBox(answerValue, answerElt)
         }
       }
 
@@ -455,12 +480,13 @@ class CodeEditor {
 
   getCode = () => {
     if (this.getIsUnitTestSetup()) {
-      let codeConcatenated = this.codeTextArea.value;
+      let codeConcatenated = this.getCodeSegmentFromTextBox(this.codeTextArea);
       for (let i = 0; i < NUM_TEST_CASES; i++) {
         const caseElt = document.getElementById("case-" + i);
         const answerElt = document.getElementById("answer-" + i);
         if (caseElt && answerElt) {
-          codeConcatenated += TEST_CONCAT_DELIM + caseElt.value + TEST_CONCAT_DELIM + answerElt.value;
+          codeConcatenated += DELIM + this.getCodeSegmentFromTextBox(caseElt)
+          codeConcatenated += DELIM + this.getCodeSegmentFromTextBox(answerElt);
         }
       }
       return codeConcatenated;

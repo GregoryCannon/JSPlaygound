@@ -74,14 +74,14 @@ function onSelectName() {
 // onSelectBreakoutRoom();
 
 function loadSample(i) {
-  const samples = isUnitTestSetup ? SAMPLES_UNIT_TESTING : SAMPLES_FUNCTIONS;
+  const samples = isUnitTestSetup ? SAMPLES_ADVANCED_UNIT_TESTING : SAMPLES_FUNCTIONS;
   document.getElementById('instructions').innerHTML =
     samples[i].instructions || '';
   editor.loadSampleCode(samples[i].code);
 }
 
 function loadActivity(i) {
-  const activities = isUnitTestSetup ? ACTIVITIES_UNIT_TESTING : ACTIVITIES_FUNCTIONS;
+  const activities = isUnitTestSetup ? ACTIVITIES_ADVANCED_UNIT_TESTING : ACTIVITIES_FUNCTIONS;
   document.getElementById('instructions').innerHTML =
     activities[i].instructions || '';
   editor.loadSampleCode(activities[i].code);
