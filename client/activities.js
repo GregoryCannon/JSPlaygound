@@ -267,7 +267,7 @@ const ACTIVITIES_UNIT_TESTING = [
       {
         title: 'Warm-Up Activity',
         instructions: 'Can you add more tests for this double() function?',
-        code: '// Doubles a number\nfunction double(number) {\n\treturn number * 2\n}'
+        code: LOCK_MARKER + '// Doubles a number\nfunction double(number) {\n\treturn number * 2\n}'
         + DELIM + LOCK_MARKER + 'double(5)' + DELIM + LOCK_MARKER + '10'
         + DELIM + LOCK_MARKER + 'double(0)' + DELIM + LOCK_MARKER + '0'
       },
@@ -275,15 +275,15 @@ const ACTIVITIES_UNIT_TESTING = [
         title: 'Can You Afford?',
         instructions: 'Can you add more tests for this canAfford() function? Look for edge cases!',
         code: 
-        '// Checks if you have enough money to buy something\nfunction canAfford(yourMoney, cost) {\n\tif (cost > yourMoney) {\n\t\treturn false  // Too expensive!\n\t} else {\n\t\treturn true   // Can afford!\n\t}\n}'
-        + DELIM + 'canAfford(200, 100)' + DELIM + 'true'
+        LOCK_MARKER + '// Checks if you have enough money to buy something\nfunction canAfford(yourMoney, cost) {\n\tif (cost > yourMoney) {\n\t\treturn false  // Too expensive!\n\t} else {\n\t\treturn true   // Can afford!\n\t}\n}'
+        + DELIM + LOCK_MARKER + 'canAfford(200, 100)' + DELIM + LOCK_MARKER + 'true'
       },
       {
         title: 'Fixing Tests',
         instructions:
           'Some of these tests aren\'t correct! Can you fix them?',
         code:
-        '// Calculates how much change you\'ll get from a vending machine\nfunction getChange(yourMoney, cost) {\n\tif (cost > yourMoney) {\n\t\treturn "Not enough money"\n\t} else {\n\t\t// Use subtraction to calculate the change\n\t\treturn yourMoney - cost\n\t}\n}'
+        LOCK_MARKER + '// Calculates how much change you\'ll get from a vending machine\nfunction getChange(yourMoney, cost) {\n\tif (cost > yourMoney) {\n\t\treturn "Not enough money"\n\t} else {\n\t\t// Use subtraction to calculate the change\n\t\treturn yourMoney - cost\n\t}\n}'
         + DELIM + 'getChange(200, 100)' + DELIM + '60'
         + DELIM + 'getChange("cow", 10)' + DELIM + '50'
         + DELIM + 'getChange(40, 30)' + DELIM + '10'
@@ -296,10 +296,10 @@ const ACTIVITIES_UNIT_TESTING = [
           'Something isn\'t quite right about this function. Can you use the tests to figure out what it is?',
         code:
         '// Checks the price of items\nfunction getCost(drinkName) {\n\tif (drinkName == "calpico") {\n\t\treturn 140\n\t}\n\tif (drinkName == "oi ocha") {\n\t\treturn 200\n\t}\n\tif (drinkName == "pepso") {\n\t\treturn 180\n\t}\n}'
-        + DELIM + 'getCost("calpico")' + DELIM + '140'
-        + DELIM + 'getCost("oi ocha")' + DELIM + '160'
-        + DELIM + 'getCost("pepsi")' + DELIM + '180'
-        + DELIM + 'getCost("seltzer")' + DELIM + '250'
+        + DELIM + LOCK_MARKER + 'getCost("calpico")' + DELIM + LOCK_MARKER + '140'
+        + DELIM + LOCK_MARKER + 'getCost("oi ocha")' + DELIM + LOCK_MARKER + '160'
+        + DELIM + LOCK_MARKER + 'getCost("pepsi")' + DELIM + LOCK_MARKER + '180'
+        + DELIM + LOCK_MARKER + 'getCost("seltzer")' + DELIM + LOCK_MARKER + '250'
       },
       'newline',
       {
@@ -307,10 +307,10 @@ const ACTIVITIES_UNIT_TESTING = [
         instructions:
           'Can you code a function that will pass all of the given unit tests?',
         code: 'function orderDrink (drinkName, moneyInserted) {\n\t// ?\n}\n\n// Side Note 1: to create a variable, do the following:\n//		var myAge = 10    \n\n// Side Note 2: to combine a number and a string, use '+'\n//		return "My age is: " + myAge'
-        + DELIM + 'orderDrink("oi ocha", 150)' + DELIM + 'Not enough money'
-        + DELIM + 'orderDrink("oi ocha", 180)' + DELIM + 'Your change: 20'
-        + DELIM + 'orderDrink("pepsi", 180)' + DELIM + 'Out of stock'
-        + DELIM + 'orderDrink("calpico", 140)' + DELIM + 'Out of stock'
-        + DELIM + 'orderDrink("oi ocha", 2000)' + DELIM + 'We only accept bills of 1000 or lower'
+        + DELIM + LOCK_MARKER + 'orderDrink("oi ocha", 150)' + DELIM + LOCK_MARKER + 'Not enough money'
+        + DELIM + LOCK_MARKER + 'orderDrink("oi ocha", 180)' + DELIM + LOCK_MARKER + 'Your change: 20'
+        + DELIM + LOCK_MARKER + 'orderDrink("pepsi", 180)' + DELIM + LOCK_MARKER + 'Out of stock'
+        + DELIM + LOCK_MARKER + 'orderDrink("calpico", 140)' + DELIM + LOCK_MARKER + 'Out of stock'
+        + DELIM + LOCK_MARKER + 'orderDrink("oi ocha", 2000)' + DELIM + LOCK_MARKER + 'We only accept bills of 1000 or lower'
       },
     ];
