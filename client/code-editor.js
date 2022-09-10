@@ -201,7 +201,9 @@ class CodeEditor {
       let realAnswer = "Exception - unknown error";
       let gotException = true;
       try {
-        const result = eval(baseCode + "\n" + testCode);
+        const combinedCode = this.recompileCode(baseCode) + "\n" + testCode;
+        const result = eval(combinedCode);
+        console.log("RESULT=", result);
         if (result === undefined){
           realAnswer = "undefined";
           gotException = false;
@@ -360,6 +362,8 @@ class CodeEditor {
       code = code.replace(/console\.log/g, 'output += "<br/>" + ')
       // Replace print statements
       code = code.replace(/print/g, 'output += "<br/>" + ');
+      // Replace exception statements
+      code = code.replace(/Exception\(/g, 'throw new Error(');
 
       newString += code;
       newString += '\nthis.showOutput(output)';

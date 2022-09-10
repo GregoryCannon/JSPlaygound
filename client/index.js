@@ -81,7 +81,7 @@ function loadSample(i) {
 }
 
 function loadActivity(i) {
-  const activities = isUnitTestSetup ? ACTIVITIES_ADVANCED_UNIT_TESTING : ACTIVITIES_FUNCTIONS;
+  const activities = isUnitTestSetup ? ACTIVITIES_UNIT_TESTING : ACTIVITIES_FUNCTIONS;
   document.getElementById('instructions').innerHTML =
     activities[i].instructions || '';
   editor.loadSampleCode(activities[i].code);
@@ -126,7 +126,7 @@ function loginForReview() {
 }
 
 function loadSamplesAndAcitivies(){
-  const samples = isUnitTestSetup ? SAMPLES_UNIT_TESTING : SAMPLES_FUNCTIONS;
+  const samples = isUnitTestSetup ? SAMPLES_ADVANCED_UNIT_TESTING : SAMPLES_FUNCTIONS;
   samples.forEach((sample, i) => {
     if (sample === 'newline') {
       presetsContainer.appendChild(document.createElement('br'));
@@ -138,7 +138,7 @@ function loadSamplesAndAcitivies(){
     presetsContainer.appendChild(button);
   })
   
-  const activities = isUnitTestSetup ? ACTIVITIES_UNIT_TESTING : ACTIVITIES_FUNCTIONS;
+  const activities = isUnitTestSetup ? ACTIVITIES_ADVANCED_UNIT_TESTING : ACTIVITIES_FUNCTIONS;
   activities.forEach((sample, i) => {
     if (sample === 'newline') {
       activitiesContainer.appendChild(document.createElement('br'));
