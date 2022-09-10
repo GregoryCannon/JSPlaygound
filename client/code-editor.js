@@ -198,37 +198,48 @@ class CodeEditor {
       }
       const expectedAnswer = document.getElementById("answer-" + i).value.replace(/"|'/g, "");
       const expectException = expectedAnswer.includes("Exception")
-      let realAnswer = "Exception - unknown error";
-      let gotException = true;
+      let realAnswer;
+      let gotRuntimeException = false;;
+      let gotError = false;
       try {
         const combinedCode = this.recompileCode(baseCode) + "\n" + testCode;
         const result = eval(combinedCode);
         console.log("RESULT=", result);
         if (result === undefined){
           realAnswer = "undefined";
-          gotException = false;
+        } else if (result == "Infinity"){
+          realAnswer = "IllegalArgumentException: cannot divide by 0"
+          gotRuntimeException = true;
         } else if (Number.isNaN(result)){
-          realAnswer = "Exception - result was not a number";
-          gotException = true;
+          realAnswer = "Exception: result was not a number";
+          gotRuntimeException = true;
         } else {
           realAnswer = result;
-          gotException = false;
         }
       } catch (e) {
-        console.log(e);
+        if (e instanceof ReferenceError || e instanceof SyntaxError){
+          realAnswer = e
+          gotError = true;
+        } else {
+          realAnswer = "Exception: " + e
+          gotRuntimeException = true;
+        } 
       }
       console.log("REAL", realAnswer, "EXPECTED", expectedAnswer);
+      const semanticAnswer = gotRuntimeException ? "Exception" : realAnswer;
 
       const output = document.getElementById("output-" + i);
       output.style.fontWeight = "bold";
-      if (realAnswer.toString() === expectedAnswer.toString() || expectException && gotException) {
+      if (gotError) {
+        output.innerHTML = `Error while running test!<br/><em>${realAnswer}</em`;
+        output.parentElement.style.background = "#e18080";
+      } else if (semanticAnswer.toString() === expectedAnswer.toString()) {
         output.innerHTML = "Test passed!";
+        if (expectException){
+          output.innerHTML += "<br/>Got: " + realAnswer
+        }
         output.parentElement.style.background = "lightgreen";
       } 
-      else if (expectException && !gotException) {
-        output.innerHTML = "Got an exception when an exception was not expected";
-        output.parentElement.style.background = "#e18080";
-      }
       else {
         console.log("parsed real answer", realAnswer, parseInt(realAnswer));
         output.innerHTML = `Test failed. <br/>Expected: <em>${expectedAnswer}</em><br/>Got: <em>${realAnswer}</em>`;
@@ -363,7 +374,7 @@ class CodeEditor {
       // Replace print statements
       code = code.replace(/print/g, 'output += "<br/>" + ');
       // Replace exception statements
-      code = code.replace(/Exception\(/g, 'throw new Error(');
+      // code = code.replace(/Exception\(/g, 'throw new Error(');
 
       newString += code;
       newString += '\nthis.showOutput(output)';

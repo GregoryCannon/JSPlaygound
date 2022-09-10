@@ -233,10 +233,10 @@ const SAMPLES_ADVANCED_UNIT_TESTING = [
     title: 'Simple Tests',
     instructions: 'This example shows how we can unit test an addition function',
     code:
-      '// Adds one to a number\nfunction addOne(number) {\n\treturn number + 1\n}'
-      + DELIM + 'addOne(5)' + DELIM + '6'
-      + DELIM + 'addOne(0)' + DELIM + '1'
-      + DELIM + 'addOne(-10)' + DELIM + '-9'
+      '// Adds one to a number\nfunction addTwo(number) {\n\treturn number + 2\n}'
+      + DELIM + 'addTwo(5)' + DELIM + '7'
+      + DELIM + 'addTwo(0)' + DELIM + '2'
+      + DELIM + 'addTwo(-10)' + DELIM + '-8'
   },
   {
     title: 'Using an If Statement',
@@ -254,62 +254,71 @@ const SAMPLES_ADVANCED_UNIT_TESTING = [
     title: 'Testing with Exceptions',
     instructions: 'This example shows how we can test a function that might throw an exception.',
     code:
-      '// Gets the next month\nfunction getNextMonth(monthNumber) {\n\tif (monthNumber < 1) {\n\t\tException("Month cannot be less than 1")\n\t}\n\tif (monthNumber > 12) {\n\t\tException("Month cannot be higher than 12")\n\t}\n\t// Don\'t worry about this math\n\treturn (monthNumber + 1) % 12\n}'
+      '// Gets the next month\nfunction getNextMonth(monthNumber) {\n\tif (monthNumber < 1) {\n\t\tthrow("Month cannot be less than 1")\n\t}\n\tif (monthNumber > 12) {\n\t\tthrow("Month cannot be higher than 12")\n\t}\n\t// Don\'t worry about this math\n\treturn (monthNumber + 1) % 12\n}'
       + DELIM + 'getNextMonth(7)' + DELIM + '8'
       + DELIM + 'getNextMonth(12)' + DELIM + '1'
       + DELIM + 'getNextMonth(-4)' + DELIM + 'Exception'
       + DELIM + 'getNextMonth(18)' + DELIM + 'Exception'
+  },
+  {
+    title: 'Built-in Exceptions',
+    instructions: 'Sometimes we run into exceptions that we don\'t throw ourselves! If something goes wrong in the system, it will also throw an Exception.',
+    code:
+      '// Divides two numbers\nfunction divide(firstNum, secondNum) {\n\treturn firstNum / secondNum\n}'
+      + DELIM + 'divide(10, 2)' + DELIM + '5'
+      + DELIM + 'divide(5, 0)' + DELIM + 'Exception'
   }
 ];
 
 const ACTIVITIES_ADVANCED_UNIT_TESTING = [
   {
     title: 'Warm-Up Activity',
-    instructions: 'Can you add more tests for this double() function?',
-    code: LOCK_MARKER + '// Doubles a number\nfunction double(number) {\n\treturn number * 2\n}'
+    instructions: 'Can you add tests to this function to make sure it throws exceptions for bad input? (e.g. strings, booleans)',
+    code: LOCK_MARKER + '// Doubles a number\nfunction double(userInput) {\n\tif (typeof(userInput) != "number") {\n\t\tthrow("Input must be a number")\n\t}\n\treturn userInput * 2\n}'
     + DELIM + LOCK_MARKER + 'double(5)' + DELIM + LOCK_MARKER + '10'
     + DELIM + LOCK_MARKER + 'double(0)' + DELIM + LOCK_MARKER + '0'
   },
   {
-    title: 'Can You Afford?',
-    instructions: 'Can you add more tests for this canAfford() function? Look for edge cases!',
+    title: 'Can you Vote?',
+    instructions: 'Can you add more tests for this canVote() function? Look for edge cases!',
     code: 
-    LOCK_MARKER + '// Checks if you have enough money to buy something\nfunction canAfford(yourMoney, cost) {\n\tif (cost > yourMoney) {\n\t\treturn false  // Too expensive!\n\t} else {\n\t\treturn true   // Can afford!\n\t}\n}'
-    + DELIM + LOCK_MARKER + 'canAfford(200, 100)' + DELIM + LOCK_MARKER + 'true'
+    LOCK_MARKER + '// Checks if you are old enough to vote\nfunction canVote(age) {\n\tif (typeof(age) != \"number\") {\n\t\tthrow("Input must be a number")\n\t}\n\tif (age >= 18) {\n\t\treturn true  // Can vote!\n\t} else {\n\t\treturn false   // Not old enough\n\t}\n}'
+    + DELIM + LOCK_MARKER + 'canVote(24)' + DELIM + LOCK_MARKER + 'true'
   },
   {
     title: 'Fixing Tests',
     instructions:
       'Some of these tests aren\'t correct! Can you fix them?',
     code:
-    LOCK_MARKER + '// Calculates how much change you\'ll get from a vending machine\nfunction getChange(yourMoney, cost) {\n\tif (cost > yourMoney) {\n\t\treturn "Not enough money"\n\t} else {\n\t\t// Use subtraction to calculate the change\n\t\treturn yourMoney - cost\n\t}\n}'
-    + DELIM + 'getChange(200, 100)' + DELIM + '60'
-    + DELIM + 'getChange("cow", 10)' + DELIM + '50'
-    + DELIM + 'getChange(40, 30)' + DELIM + '10'
-    + DELIM + 'getChange(25, 100)' + DELIM + '75'
-    + DELIM + 'getChange(500, 100)' + DELIM + 'Not enough money'
+    LOCK_MARKER + '// Reverses a string\nfunction reverse(inputString) {\n\tif (typeof(inputString) != \"string\") {\n\t\tthrow("Input must be a string")\n\t}\n\t// Don\'t worry about how this works\n\treturn inputString.split(\'\').reverse().join(\'\')\n}'
+    + DELIM + 'reverse("abcde")' + DELIM + 'edcba'
+    + DELIM + 'reverse("cow")' + DELIM + 'wo'
+    + DELIM + 'reverse(100)' + DELIM + '001'
+    + DELIM + 'reverse(reverse("123"))' + DELIM + '321'
+    + DELIM + 'revrers("hello")' + DELIM + 'olleh'
   },
   {
     title: 'Fixing the Function',
     instructions:
-      'Something isn\'t quite right about this function. Can you use the tests to figure out what it is?',
+      'This function isn\'t quite right, can you fix it so that all the tests pass?',
     code:
-    '// Checks the price of items\nfunction getCost(drinkName) {\n\tif (drinkName == "calpico") {\n\t\treturn 140\n\t}\n\tif (drinkName == "oi ocha") {\n\t\treturn 200\n\t}\n\tif (drinkName == "pepso") {\n\t\treturn 180\n\t}\n}'
-    + DELIM + LOCK_MARKER + 'getCost("calpico")' + DELIM + LOCK_MARKER + '140'
-    + DELIM + LOCK_MARKER + 'getCost("oi ocha")' + DELIM + LOCK_MARKER + '160'
-    + DELIM + LOCK_MARKER + 'getCost("pepsi")' + DELIM + LOCK_MARKER + '180'
-    + DELIM + LOCK_MARKER + 'getCost("seltzer")' + DELIM + LOCK_MARKER + '250'
+    '// Checks if the library has a book\nfunction checkForBook(title) {\n\tif (typeof(title) != "string") {\n\t\treturn false\n\t}\n\tif (title == "harry potter") {\n\t\treturn true\n\t} else if (title == "hunger games") {\n\t\treturn true\n\t} else {\n\t\treturn false\n\t}\n}'
+    + DELIM + LOCK_MARKER + 'checkForBook("Harry Potter")' + DELIM + LOCK_MARKER + 'true'
+    + DELIM + LOCK_MARKER + 'checkForBook(12)' + DELIM + LOCK_MARKER + 'Exception'
+    + DELIM + LOCK_MARKER + 'checkForBook("Twilight")' + DELIM + LOCK_MARKER + 'false'
+    + DELIM + LOCK_MARKER + 'checkForBook("Attack on Titan")' + DELIM + LOCK_MARKER + 'true'
+    + DELIM + LOCK_MARKER + '' + DELIM + LOCK_MARKER + ''
   },
   'newline',
   {
     title: 'Challenge: Coding Interview',
     instructions:
       'Can you code a function that will pass all of the given unit tests?',
-    code: 'function orderDrink (drinkName, moneyInserted) {\n\t// ?\n}\n\n// Side Note 1: to create a variable, do the following:\n//		var myAge = 10    \n\n// Side Note 2: to combine a number and a string, use '+'\n//		return "My age is: " + myAge'
-    + DELIM + LOCK_MARKER + 'orderDrink("oi ocha", 150)' + DELIM + LOCK_MARKER + 'Not enough money'
-    + DELIM + LOCK_MARKER + 'orderDrink("oi ocha", 180)' + DELIM + LOCK_MARKER + 'Your change: 20'
-    + DELIM + LOCK_MARKER + 'orderDrink("pepsi", 180)' + DELIM + LOCK_MARKER + 'Out of stock'
-    + DELIM + LOCK_MARKER + 'orderDrink("calpico", 140)' + DELIM + LOCK_MARKER + 'Out of stock'
-    + DELIM + LOCK_MARKER + 'orderDrink("oi ocha", 2000)' + DELIM + LOCK_MARKER + 'We only accept bills of 1000 or lower'
+    code: 'function buyBook (title, moneyYouHave) {\n\t// ?\n}'
+    + DELIM + LOCK_MARKER + 'buyBook("Doraemon", 100)' + DELIM + LOCK_MARKER + 'Not enough money'
+    + DELIM + LOCK_MARKER + 'buyBook("Code Geass", 800)' + DELIM + LOCK_MARKER + 'Your change: 200'
+    + DELIM + LOCK_MARKER + 'buyBook("Doraemon", 500)' + DELIM + LOCK_MARKER + 'Your change: 0'
+    + DELIM + LOCK_MARKER + 'buyBook(100, "Hunter x Hunter")' + DELIM + LOCK_MARKER + 'Exception'
+    + DELIM + LOCK_MARKER + 'buyBook("Hunter x Hunter", "Doraemon")' + DELIM + LOCK_MARKER + 'Exception'
   },
 ];

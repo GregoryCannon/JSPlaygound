@@ -81,7 +81,7 @@ function loadSample(i) {
 }
 
 function loadActivity(i) {
-  const activities = isUnitTestSetup ? ACTIVITIES_UNIT_TESTING : ACTIVITIES_FUNCTIONS;
+  const activities = isUnitTestSetup ? ACTIVITIES_ADVANCED_UNIT_TESTING : ACTIVITIES_FUNCTIONS;
   document.getElementById('instructions').innerHTML =
     activities[i].instructions || '';
   editor.loadSampleCode(activities[i].code);
