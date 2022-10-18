@@ -10,9 +10,8 @@ const app = express();
 app.use(express.json());
 
 // Serve frontend
-app.use(express.static(path.join(__dirname, '../client')));
-app.use('/prism', express.static(__dirname + '../prism'));
-
+app.use(express.static(path.join(__dirname, '../public')));
+app.use('/prism', express.static(__dirname + '../public/prism'));
 
 // Set CORS policy
 app.use((req, res, next) => {

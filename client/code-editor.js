@@ -534,8 +534,8 @@ class CodeEditor {
   }
 }
 
+// Util function that allows the textarea to handle the tab character
 function allowTabbing(textarea, onTabCallback) {
-  // Allow tabbing in the code editor
   textarea.addEventListener('keydown', function (e) {
     if (e.key == 'Tab') {
       e.preventDefault();
