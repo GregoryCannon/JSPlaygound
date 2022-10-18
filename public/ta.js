@@ -13,20 +13,12 @@ const breakoutSelect = document.getElementById('ta-room-select');
 
 const editor = new CodeEditor(
     ROLE.TEACHER, codeTextArea, codeContainer, renderedCodeContainer, outputDiv,
-    studentButtonContainer, studentCodeTitle, /* remoteEditNotificationText= */ null, () => { return true; });
+    studentButtonContainer, studentCodeTitle, /* remoteEditNotificationText= */ null);
 
 // Get a list of breakout rooms
 function loadBreakoutRooms() {
-  const rooms = Object.keys(roomStudentLookup);
-  // Custom sort for the rooms, given that they are in the format L1-4, L2-5,
-  // etc.
-  rooms.sort((a, b) => {
-    const [a_, a1, a2] = a.split(/-|L/g);
-    const [b_, b1, b2] = b.split(/-|L/g);
-    return (a1 * 100 + a2) - (b1 * 100 + b2);
-  });
   // Add an option to see all students from all rooms
-  rooms.unshift('(all rooms)');
+  const rooms = ['(all rooms)', ...BREAKOUT_ROOMS]
 
   // Remove all existing options and add from the new list
   while (breakoutSelect.firstChild) {

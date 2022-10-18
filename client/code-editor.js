@@ -1,63 +1,7 @@
-const ROLE = Object.freeze({ STUDENT: 0, TEACHER: 1 });
-const NEWLINE = '<br/>';
-
-// Config variables
-const NUM_TEST_CASES = 5;
-const IS_PROD = true;
-const SERVER_URL =
-  IS_PROD ? 'https://csinenglish.herokuapp.com' : 'http://localhost:3000';
-
-// Every time the student edits, the version is incremented by 1
-const STUDENT_VERSION_INCREMENT = 1;
-// The version is rounded before incrementing so the .1 exists as a
-// marker that a teacher was the last editor.
-const TEACHER_VERSION_INCREMENT = 100.1;
-// Every time a code sample is loaded, the version increments to a round
-// multiple of this increment
-const LOAD_SAMPLE_CODE_INCREMENT = 1000;
-
-// How often students and teachers should pull from the server. Can be
-// configured to match the server's capacity.
-const STUDENT_SYNC_INTERVAL_MS = 2500;
-const TEACHER_SYNC_INTERVAL_MS = 1000;
-// Multiplier for sync intervals that can be edited in real-time if the server
-// is under heavy load
-let antiDdosMultiplier = 1.0;
-// The delay between the last keystroke and pushing to the server
-const EDIT_TO_PUSH_DELAY_MS = 500;
-// How ofton to check if a sync with the server is needed
-const TICK_MS = 100;
-// Counter in ticks until the page should collect metrics on server connectivity
-const SERVER_LAG_MONITORING_PERIOD_TICKS = 100;
-
-const DISABLED_TEXT_AREA_COLOR = "#efefef";
-const ENABLED_TEXT_AREA_COLOR = "#fff";
-
-function allowTabbing(textarea, onTabCallback) {
-  // Allow tabbing in the code editor
-  textarea.addEventListener('keydown', function (e) {
-    if (e.key == 'Tab') {
-      e.preventDefault();
-      var start = this.selectionStart;
-      var end = this.selectionEnd;
-
-      // Set textarea value to: text before caret + tab + text after caret
-      this.value =
-        this.value.substring(0, start) + '\t' + this.value.substring(end);
-
-      // Put caret at right position again
-      this.selectionStart = this.selectionEnd = start + 1;
-
-      onTabCallback();
-    }
-  });
-}
-allowTabbing = allowTabbing.bind(this);
-
 class CodeEditor {
   constructor(
     userRole, codeTextArea, codeContainer, renderedCodeContainer, outputDiv,
-    studentButtonContainer, studentCodeTitle, remoteEditNotificationText, getIsUnitTestSetup) {
+    studentButtonContainer, studentCodeTitle, remoteEditNotificationText) {
     this.userRole = userRole;
     this.codeTextArea = codeTextArea;
     this.codeContainer = codeContainer;
@@ -66,7 +10,6 @@ class CodeEditor {
     this.studentButtonContainer = studentButtonContainer;
     this.studentCodeTitle = studentCodeTitle;
     this.remoteEditNotificationText = remoteEditNotificationText;
-    this.getIsUnitTestSetup = getIsUnitTestSetup;
 
     // HACKKK
     this.testCasesContainer = document.getElementById("test-cases");
@@ -171,7 +114,7 @@ class CodeEditor {
         nextMultiple(this.codeVersion, LOAD_SAMPLE_CODE_INCREMENT);
 
       this.loadCodeToUi(newVersion, newCode);
-      if (isUnitTestSetup){
+      if (GlobalState.isUnitTestSetup){
         this.resetTestResults();
       }
       this.hasChangedCode = true;
@@ -384,7 +327,7 @@ class CodeEditor {
   /** Execute the code in the text area. */
   runCode =
     () => {
-      if (this.getIsUnitTestSetup()) {
+      if (GlobalState.isUnitTestSetup) {
         this.runTests();
       } else {
         // Clear old output
@@ -499,7 +442,7 @@ class CodeEditor {
     }
 
   getCode = () => {
-    if (this.getIsUnitTestSetup()) {
+    if (GlobalState.isUnitTestSetup) {
       let codeConcatenated = this.getCodeSegmentFromTextBox(this.codeTextArea);
       for (let i = 0; i < NUM_TEST_CASES; i++) {
         const caseElt = document.getElementById("case-" + i);
@@ -590,3 +533,24 @@ class CodeEditor {
     setTimeout(this.tickLoop, TICK_MS);
   }
 }
+
+function allowTabbing(textarea, onTabCallback) {
+  // Allow tabbing in the code editor
+  textarea.addEventListener('keydown', function (e) {
+    if (e.key == 'Tab') {
+      e.preventDefault();
+      var start = this.selectionStart;
+      var end = this.selectionEnd;
+
+      // Set textarea value to: text before caret + tab + text after caret
+      this.value =
+        this.value.substring(0, start) + '\t' + this.value.substring(end);
+
+      // Put caret at right position again
+      this.selectionStart = this.selectionEnd = start + 1;
+
+      onTabCallback();
+    }
+  });
+}
+allowTabbing = allowTabbing.bind(this);
