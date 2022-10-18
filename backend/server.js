@@ -11,6 +11,7 @@ app.use(express.json());
 
 // Serve frontend
 app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../client')));
 app.use('/prism', express.static(__dirname + '../public/prism'));
 
 // Set CORS policy
