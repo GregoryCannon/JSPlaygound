@@ -13,7 +13,7 @@ class CodeEditor {
 
     // HACKKK
     this.testCasesContainer = document.getElementById("test-cases");
-    this.outputContainer = document.getElementById("output-section")
+    this.tesstCasesOutputContainer = document.getElementById("output-section")
 
     // UI Setup
     this.codeTextArea.style.visibility = 'hidden';
