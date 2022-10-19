@@ -1,19 +1,16 @@
 class CodeEditor {
   constructor(
-    userRole, codeTextArea, codeContainer, renderedCodeContainer, outputDiv,
-    studentButtonContainer, studentCodeTitle, remoteEditNotificationText) {
+    userRole, uiElts) {
     this.userRole = userRole;
-    this.codeTextArea = codeTextArea;
-    this.codeContainer = codeContainer;
-    this.renderedCodeContainer = renderedCodeContainer;
-    this.outputDiv = outputDiv;
-    this.studentButtonContainer = studentButtonContainer;
-    this.studentCodeTitle = studentCodeTitle;
-    this.remoteEditNotificationText = remoteEditNotificationText;
-
-    // HACKKK
-    this.testCasesContainer = document.getElementById("test-cases");
-    this.tesstCasesOutputContainer = document.getElementById("output-section")
+    this.codeTextArea = uiElts.codeTextArea;
+    this.codeContainer = uiElts.codeContainer;
+    this.renderedCodeContainer = uiElts.renderedCodeContainer;
+    this.outputDiv = uiElts.outputDiv;
+    this.studentButtonContainer = uiElts.studentButtonContainer;
+    this.studentCodeTitle = uiElts.studentCodeTitle;
+    this.remoteEditNotificationText = uiElts.remoteEditNotificationText;
+    this.testCasesContainer = uiElts.testCasesContainer;
+    this.testCasesOutputContainer = uiElts.testCasesOutputContainer;
 
     // UI Setup
     this.codeTextArea.style.visibility = 'hidden';

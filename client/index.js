@@ -10,9 +10,11 @@ const presetsContainer = document.getElementById('presets');
 const activitiesContainer = document.getElementById('activities');
 const teacherEditNotification =
   document.getElementById('teacher-edit-notification');
+const testCasesContainer = document.getElementById("test-cases");
+const testCasesOutputContainer = document.getElementById("output-section");
 
 const breakoutSelect = document.getElementById('room-select');
-const nameSelect = document.getElementById('name-select');
+const nameInput = document.getElementById('name-select');
 
 function loadBreakoutRooms() {
   // Remove all breakout room options
@@ -51,8 +53,8 @@ function promptForUserName() {
 }
 
 function login() {
-  if (breakoutSelect.value && nameSelect.value || false) {
-    const userName = breakoutSelect.value + ' | ' + nameSelect.value;
+  if (breakoutSelect.value && nameInput.value || false) {
+    const userName = breakoutSelect.value + ' | ' + nameInput.value;
     document.getElementById('user-name').innerHTML = userName;
     editor.setUserName(userName);
 
@@ -110,9 +112,18 @@ document.getElementById('login-button').addEventListener('click', login);
 document.getElementById('review-login-button').addEventListener('click', loginForReview);
 
 const editor = new CodeEditor(
-  ROLE.STUDENT, codeTextArea, codeContainer, renderedCodeContainer, outputDiv,
-    /* studentButtonContainer= */ null, /* studentCodeTitle= */ null,
-  teacherEditNotification);
+  ROLE.STUDENT, 
+  {
+    codeTextArea, 
+    codeContainer, 
+    renderedCodeContainer, 
+    outputDiv,
+    studentButtonContainer: null, 
+    studentCodeTitle: null, 
+    remoteEditNotificationText: teacherEditNotification,
+    testCasesContainer, 
+    testCasesOutputContainer
+  });
 
 // setTimeout(promptForUserName, 10);
 // login();
