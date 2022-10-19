@@ -18,12 +18,10 @@ class CodeEditor {
 
     // Event listeners
     codeTextArea.addEventListener('input', this.onCodeChangedByUser);
-    for (let i = 0; i < NUM_TEST_CASES; i++) {
-      const caseElt = document.getElementById("case-" + i);
-      const answerElt = document.getElementById("answer-" + i);
+    this.forEachTestCase((caseElt, answerElt, _) => {
       caseElt.addEventListener('input', this.onCodeChangedByUser);
       answerElt.addEventListener('input', this.onCodeChangedByUser);
-    }
+    })
     runCodeButton.addEventListener('click', this.runCode);
     allowTabbing(codeTextArea, this.onCodeChangedByUser);
 
@@ -38,6 +36,15 @@ class CodeEditor {
 
     this.syncWithServer();
     this.tickLoop();
+  }
+
+  forEachTestCase = (consumerFun) => {
+    for (let i = 0; i < NUM_TEST_CASES; i++){
+      const caseInput = document.getElementById("case-" + i);
+      const answerInput = document.getElementById("answer-" + i);
+      const outputDiv = document.getElementById("output-" + i);
+      consumerFun(caseInput, answerInput, outputDiv)
+    }
   }
 
   getCodeVersion =
@@ -59,7 +66,7 @@ class CodeEditor {
    * editable depending on the presence of a "lock" indicator. 
    */
   loadCodeSegmentToTextBox = (newCode, textBoxElt) => {
-    if (newCode.substring(0, LOCK_MARKER.length) === LOCK_MARKER){
+    if (newCode.substring(0, LOCK_MARKER.length) === LOCK_MARKER) {
       textBoxElt.readOnly = true;
       textBoxElt.style.background = DISABLED_TEXT_AREA_COLOR;
       textBoxElt.value = newCode.substring(LOCK_MARKER.length);
@@ -84,25 +91,28 @@ class CodeEditor {
       this.loadCodeSegmentToTextBox(split[0], this.codeTextArea);
 
       // Then load test components
-      for (let i = 0; i < NUM_TEST_CASES; i++) {
-        const caseElt = document.getElementById("case-" + i);
-        const answerElt = document.getElementById("answer-" + i);
+      let i = 0;
+      this.forEachTestCase((caseElt, answerElt, _) => {
         if (caseElt && answerElt) {
           const caseValue = split[(2 * i) + 1] || ""
           const answerValue = split[(2 * i) + 2] || ""
           this.loadCodeSegmentToTextBox(caseValue, caseElt)
           this.loadCodeSegmentToTextBox(answerValue, answerElt)
         }
-      }
-
+        i++
+      })
       this.codeVersion = newVersion;
       this.onCodeChanged(/* byUser= */ false);
       this.outputDiv.innerHTML = '';
     }
 
-  /** Loads a piece of starter code to the UI. */
+  /** Loads a piece of starter code to the UI. 
+   * @param codeSample { title: string, instructions: string, code: string }
+   */
   loadSampleCode =
-    (newCode) => {
+    (codeSample) => {
+      document.getElementById('instructions').innerHTML = codeSample.instructions || '';
+
       // Set version to the next clean multiple of the
       // LOAD_SAMPLE_CODE_INCREMENT
       const nextMultiple = (num, base) =>
@@ -110,8 +120,8 @@ class CodeEditor {
       const newVersion =
         nextMultiple(this.codeVersion, LOAD_SAMPLE_CODE_INCREMENT);
 
-      this.loadCodeToUi(newVersion, newCode);
-      if (GlobalState.isUnitTestSetup){
+      this.loadCodeToUi(newVersion, codeSample.code);
+      if (GlobalState.isUnitTestSetup) {
         this.resetTestResults();
       }
       this.hasChangedCode = true;
@@ -119,73 +129,76 @@ class CodeEditor {
     }
 
   resetTestResults = () => {
-    for (let i = 0; i < NUM_TEST_CASES; i++) {
-      const output = document.getElementById("output-" + i);
+    this.forEachTestCase((_, __, output) => {
       output.innerHTML = "";
       output.parentElement.style.background = "transparent";
-      continue;
-    }
+    })
   }
+
+
 
   runTests = () => {
     this.resetTestResults();
 
-    for (let i = 0; i < NUM_TEST_CASES; i++) {
+    this.forEachTestCase((caseElt, answerElt, output) => {
       const baseCode = codeTextArea.value.replace(/print/g, "");
-      const testCode = document.getElementById("case-" + i).value;
-      if (!testCode || !baseCode){
-        continue;
+      const testCode = caseElt.value;
+      if (!testCode || !baseCode) {
+        return;
       }
-      const expectedAnswer = document.getElementById("answer-" + i).value.replace(/"|'/g, "");
+
+      const expectedAnswer = answerElt.value.replace(/"|'/g, ""); // Remove quotes from the answer
       const expectException = expectedAnswer.includes("Exception")
+      
+      // Execute the test code
       let realAnswer;
-      let gotRuntimeException = false;;
+      let gotRuntimeException = false;
       let gotError = false;
       try {
         const combinedCode = this.recompileCode(baseCode) + "\n" + testCode;
         const result = eval(combinedCode);
         console.log("RESULT=", result);
-        if (result === undefined){
+        if (result === undefined) {
           realAnswer = "undefined";
-        } else if (result == "Infinity"){
+        } else if (result == "Infinity") {
           realAnswer = "IllegalArgumentException: cannot divide by 0"
           gotRuntimeException = true;
-        } else if (Number.isNaN(result)){
+        } else if (Number.isNaN(result)) {
           realAnswer = "Exception: result was not a number";
           gotRuntimeException = true;
         } else {
           realAnswer = result;
         }
       } catch (e) {
-        if (e instanceof ReferenceError || e instanceof SyntaxError){
+        if (e instanceof ReferenceError || e instanceof SyntaxError) {
           realAnswer = e
           gotError = true;
         } else {
           realAnswer = "Exception: " + e
           gotRuntimeException = true;
-        } 
+        }
       }
       console.log("REAL", realAnswer, "EXPECTED", expectedAnswer);
       const semanticAnswer = gotRuntimeException ? "Exception" : realAnswer;
 
-      const output = document.getElementById("output-" + i);
+      // Display feedback based on the correctness of the answer
       output.style.fontWeight = "bold";
       if (gotError) {
         output.innerHTML = `Error while running test!<br/><em>${realAnswer}</em`;
         output.parentElement.style.background = "#e18080";
       } else if (semanticAnswer.toString() === expectedAnswer.toString()) {
         output.innerHTML = "Test passed!";
-        if (expectException){
+        if (expectException) {
           output.innerHTML += "<br/>Got: " + realAnswer
         }
         output.parentElement.style.background = "lightgreen";
-      } 
+      }
       else {
         console.log("parsed real answer", realAnswer, parseInt(realAnswer));
         output.innerHTML = `Test failed. <br/>Expected: <em>${expectedAnswer}</em><br/>Got: <em>${realAnswer}</em>`;
         output.parentElement.style.background = "pink";
       }
-    }
+    })
   }
 
   /**
@@ -441,14 +454,12 @@ class CodeEditor {
   getCode = () => {
     if (GlobalState.isUnitTestSetup) {
       let codeConcatenated = this.getCodeSegmentFromTextBox(this.codeTextArea);
-      for (let i = 0; i < NUM_TEST_CASES; i++) {
-        const caseElt = document.getElementById("case-" + i);
-        const answerElt = document.getElementById("answer-" + i);
+      this.forEachTestCase((caseElt, answerElt, _) => {
         if (caseElt && answerElt) {
           codeConcatenated += DELIM + this.getCodeSegmentFromTextBox(caseElt)
           codeConcatenated += DELIM + this.getCodeSegmentFromTextBox(answerElt);
         }
-      }
+      })
       return codeConcatenated;
     }
   }

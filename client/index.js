@@ -15,6 +15,8 @@ const testCasesOutputContainer = document.getElementById("output-section");
 
 const breakoutSelect = document.getElementById('room-select');
 const nameInput = document.getElementById('name-select');
+const loggedInView = document.getElementById('logged-in-view');
+const loginForm = document.getElementById('login-form')
 
 function loadBreakoutRooms() {
   // Remove all breakout room options
@@ -30,51 +32,29 @@ function loadBreakoutRooms() {
 }
 loadBreakoutRooms();
 
-function loadSample(i) {
-  document.getElementById('instructions').innerHTML =
-    getSamples()[i].instructions || '';
-  editor.loadSampleCode(getSamples()[i].code);
-}
-
-function loadActivity(i) {
-  document.getElementById('instructions').innerHTML =
-    getActivities()[i].instructions || '';
-  editor.loadSampleCode(getActivities()[i].code);
-}
-
-function promptForUserName() {
-  // Get name from alert
-  let userName;
-  while (!userName) {
-    userName = prompt('Please enter your name');
-  }
-  document.getElementById('user-name').innerHTML = userName;
-  editor.setUserName(userName);
-}
-
 function login() {
   if (breakoutSelect.value && nameInput.value || false) {
     const userName = breakoutSelect.value + ' | ' + nameInput.value;
     document.getElementById('user-name').innerHTML = userName;
     editor.setUserName(userName);
 
-    document.getElementById('logged-in-view').style.display = 'inline';
-    document.getElementById('login-form').style.display = 'none';
+    loggedInView.style.display = 'inline';
+    loginForm.style.display = 'none';
 
     GlobalState.isUnitTestSetup = true;
 
     loadSamplesAndAcitivies();
     outputSection.style.display = "none";
   } else {
-    // alert('Breakout room or name missing.')
+    alert('Breakout room or name missing.')
   }
 }
 
 function loginForReview() {
   editor.setUserName("LOCAL-REVIEW");
-  document.getElementById('logged-in-view').style.display = 'inline';
-  document.getElementById('login-form').style.display = 'none';
-  document.getElementById('test-cases').style.display = 'none';
+  loggedInView.style.display = 'inline';
+  loginForm.style.display = 'none';
+  testCasesContainer.style.display = 'none';
   GlobalState.isUnitTestSetup = false;
 
   loadSamplesAndAcitivies();
@@ -88,7 +68,7 @@ function loadSamplesAndAcitivies(){
     }
     const button = document.createElement('button');
     button.innerHTML = sample.title;
-    button.onclick = () => loadSample(i);
+    button.onclick = () => editor.loadSampleCode(getSamples()[i]);
     presetsContainer.appendChild(button);
   })
   
@@ -99,7 +79,7 @@ function loadSamplesAndAcitivies(){
     }
     const button = document.createElement('button');
     button.innerHTML = sample.title;
-    button.onclick = () => loadActivity(i);
+    button.onclick = () => editor.loadSampleCode(getActivities()[i]);
     activitiesContainer.appendChild(button);
   })
 }
