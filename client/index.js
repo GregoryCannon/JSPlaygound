@@ -15,6 +15,7 @@ const testCasesOutputContainer = document.getElementById("output-section");
 
 const breakoutSelect = document.getElementById('room-select');
 const nameInput = document.getElementById('name-select');
+const lessonPicker = document.getElementById('lesson-picker');
 const loggedInView = document.getElementById('logged-in-view');
 const loginForm = document.getElementById('login-form')
 
@@ -44,7 +45,6 @@ function login() {
     GlobalState.isUnitTestSetup = true;
 
     loadSamplesAndAcitivies();
-    outputSection.style.display = "none";
   } else {
     alert('Breakout room or name missing.')
   }
@@ -54,13 +54,15 @@ function loginForReview() {
   editor.setUserName("LOCAL-REVIEW");
   loggedInView.style.display = 'inline';
   loginForm.style.display = 'none';
-  testCasesContainer.style.display = 'none';
-  GlobalState.isUnitTestSetup = false;
 
+  // Load the lesson indicated in the picker
+  GlobalState.currentLesson = lessonPicker.value;
+  GlobalState.isUnitTestSetup = lessonPicker.value === Titles.UNIT_TESTING || lessonPicker.value == Titles.ADVANCED_UNIT_TESTING;
+  console.log(GlobalState);
   loadSamplesAndAcitivies();
 }
 
-function loadSamplesAndAcitivies(){
+function loadSamplesAndAcitivies() {
   getSamples().forEach((sample, i) => {
     if (sample === 'newline') {
       presetsContainer.appendChild(document.createElement('br'));
@@ -71,7 +73,7 @@ function loadSamplesAndAcitivies(){
     button.onclick = () => editor.loadSampleCode(getSamples()[i]);
     presetsContainer.appendChild(button);
   })
-  
+
   getActivities().forEach((sample, i) => {
     if (sample === 'newline') {
       activitiesContainer.appendChild(document.createElement('br'));
@@ -82,6 +84,14 @@ function loadSamplesAndAcitivies(){
     button.onclick = () => editor.loadSampleCode(getActivities()[i]);
     activitiesContainer.appendChild(button);
   })
+
+  if (GlobalState.isUnitTestSetup){
+    outputSection.style.display = "none";
+    testCasesContainer.style.display = 'block';
+  } else {
+    testCasesContainer.style.display = 'none';
+    outputSection.style.display = 'block';
+  }
 }
 
 /* ------------------
@@ -92,16 +102,16 @@ document.getElementById('login-button').addEventListener('click', login);
 document.getElementById('review-login-button').addEventListener('click', loginForReview);
 
 const editor = new CodeEditor(
-  ROLE.STUDENT, 
+  ROLE.STUDENT,
   {
-    codeTextArea, 
-    codeContainer, 
-    renderedCodeContainer, 
+    codeTextArea,
+    codeContainer,
+    renderedCodeContainer,
     outputDiv,
-    studentButtonContainer: null, 
-    studentCodeTitle: null, 
+    studentButtonContainer: null,
+    studentCodeTitle: null,
     remoteEditNotificationText: teacherEditNotification,
-    testCasesContainer, 
+    testCasesContainer,
     testCasesOutputContainer
   });
 

@@ -46,14 +46,14 @@ const BREAKOUT_ROOMS = [
 // });
 
 const GlobalState = {
-  currentLesson: "AdvUnitTests",
+  currentLesson: "AdvUnitTests", // Currently unused
   isUnitTestSetup: true
 }
 
 function getSamples(){
-  return GlobalState.isUnitTestSetup ? SAMPLES_ADVANCED_UNIT_TESTING : SAMPLES_FUNCTIONS
+  return SAMPLES_LOOKUP[GlobalState.currentLesson]
 }
 
 function getActivities() {
-  return GlobalState.isUnitTestSetup ? ACTIVITIES_ADVANCED_UNIT_TESTING : ACTIVITIES_FUNCTIONS
+  return ACTIVITY_LOOKUP[GlobalState.currentLesson]
 }
