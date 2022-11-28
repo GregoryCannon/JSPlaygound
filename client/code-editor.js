@@ -29,7 +29,7 @@ class CodeEditor {
     this.hasChangedCode = false;
     this.codeVersion = 0;
     this.userName = '';
-    this.codeMap = null;
+    this.studentCodeLookup = null;
     this.ticksUntilPush = -1;
     this.ticksSinceLastRefreshCount = 0;
     this.numRefreshesSinceLastCount = 0;
@@ -255,7 +255,7 @@ class CodeEditor {
 
       // Get new list
       let newList = [];
-      for (const student of Object.keys(this.codeMap).sort()) {
+      for (const student of Object.keys(this.studentCodeLookup).sort()) {
         const [studentRoom, studentName] = student.split(' | ');
         if (studentRoom !== taRoom && taRoom !== '(all rooms)') {
           continue;
@@ -370,8 +370,8 @@ class CodeEditor {
       }
 
       // Maybe load their code from the map
-      if (this.codeMap !== null && this.codeMap.hasOwnProperty(newName)) {
-        const [remoteVersion, remoteCode] = this.codeMap[this.userName];
+      if (this.studentCodeLookup !== null && this.studentCodeLookup.hasOwnProperty(newName)) {
+        const [remoteVersion, remoteCode] = this.studentCodeLookup[this.userName];
         this.loadCodeToUi(remoteVersion, remoteCode)
       } else {
         console.log('Set user name, not loading from map')
@@ -445,7 +445,7 @@ class CodeEditor {
 
           // Pull student list
           if (this.userRole === ROLE.TEACHER) {
-            this.codeMap = newMap;
+            this.studentCodeLookup = newMap;
             this.renderStudentButtons();
           }
         });
