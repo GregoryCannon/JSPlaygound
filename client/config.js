@@ -1,5 +1,10 @@
+// Enums and data values
 const ROLE = Object.freeze({ STUDENT: 0, TEACHER: 1 });
 const NEWLINE = '<br/>';
+const NO_QUESTION = "noquestion";
+const STATUS_UNGRADED = 0;
+const STATUS_CORRECT = 1;
+const STATUS_INCORRECT = 2;
 
 // Config variables
 const NUM_TEST_CASES = 5;

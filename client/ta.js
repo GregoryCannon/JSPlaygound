@@ -88,7 +88,7 @@ outputSection.style.display = "none";
 // students in that room
 breakoutSelect.addEventListener('change', editor.renderStudentButtons);
 
-// buttonMarkCorrect.addEventListener('click', editor.markProblemCorrect());
-// buttonMarkIncorrect.addEventListener('click', editor.markProblemIncorrect());
+buttonMarkCorrect.addEventListener('click', () => editor.markQuestionWithStatus(STATUS_CORRECT));
+buttonMarkIncorrect.addEventListener('click', () => editor.markQuestionWithStatus(STATUS_INCORRECT));
 
 editor.onSessionStart();

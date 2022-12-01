@@ -1,5 +1,3 @@
-const NO_QUESTION = "noquestion";
-
 class CodeEditor {
   constructor(
     userRole, uiElts) {
@@ -246,7 +244,7 @@ class CodeEditor {
 
   onCodeChangedByUser =
     () => {
-      if (this.remoteEditNotificationText !== null) {
+      if (this.userRole === ROLE.STUDENT && this.remoteEditNotificationText !== null) {
           this.remoteEditNotificationText.style.visibility = 'hidden';
       }
       this.schedulePush();
@@ -272,6 +270,7 @@ class CodeEditor {
       // Get new list
       let newList = [];
       for (const student of Object.keys(this.dataLookupByStudent).sort()) {
+        console.log("Found student", student, this.dataLookupByStudent);
         const [studentRoom, studentName] = student.split(' | ');
         if (studentRoom !== taRoom && taRoom !== '(all rooms)') {
           continue;
@@ -322,7 +321,14 @@ class CodeEditor {
 
     function getButton(sample) {
       const button = document.createElement('button');
-      button.innerHTML = sample.title;
+      const status = this.dataModel[sample.title].status
+      let statusText = "";
+      if (status === STATUS_CORRECT){
+        statusText = "✅ "
+      } else if (status === STATUS_INCORRECT){
+        statusText = "🟡 "
+      }
+      button.innerHTML = statusText + sample.title;
       button.onclick = () => this.onQuestionClicked(sample.title);
       // Highlight one color if you're currently viewing the question
       if (this.getCurrentQuestion() === sample.title) {
@@ -354,6 +360,17 @@ class CodeEditor {
       }
       this.activitiesContainer.appendChild(getButton(sample));
     })
+  }
+
+  markQuestionWithStatus(newStatus){
+    const question = this.getCurrentQuestion();
+    if (this.dataModel[question].status !== newStatus){
+      this.dataModel[question].status = newStatus;
+    } else {
+      this.dataModel[question].status = STATUS_UNGRADED;
+    }
+    this.renderQuestionButtons();
+    this.schedulePush();
   }
 
   /** Uses the Prism library to render code with syntax highlighting */
@@ -441,7 +458,7 @@ class CodeEditor {
         this.codeSection.style.visibility = "visible"
 
         // Reset teacher question peeking
-        this.teacherPeekQuestion = undefined;
+        this.teacherPeekQuestion = null;
 
         // Maybe load their code from the map
         if (this.dataLookupByStudent !== null && this.dataLookupByStudent.hasOwnProperty(newName)) {
@@ -535,7 +552,7 @@ class CodeEditor {
     }
 
   saveCurrentCodeToDataModel = () => {
-    const newLookup = JSON.parse(JSON.stringify(this.dataModel));
+    const newDataModel = JSON.parse(JSON.stringify(this.dataModel));
     let currentQuestionCode = this.getCodeSegmentFromTextBox(this.codeTextArea);
     // Maybe add unit test code
     if (GlobalState.isUnitTestSetup) {
@@ -547,8 +564,8 @@ class CodeEditor {
       })
     }
     // Update the local question -> code map
-    newLookup[this.getCurrentQuestion()].code = currentQuestionCode;
-    this.dataModel = newLookup;
+    newDataModel[this.getCurrentQuestion()].code = currentQuestionCode;
+    this.dataModel = newDataModel;
   }
 
   onSessionStart = () => {
