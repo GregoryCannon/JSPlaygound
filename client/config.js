@@ -8,7 +8,7 @@ const STATUS_INCORRECT = 2;
 
 // Config variables
 const NUM_TEST_CASES = 5;
-const IS_PROD = false;
+const IS_PROD = true;
 const SERVER_URL =
   IS_PROD ? 'https://csinenglish.herokuapp.com' : 'http://localhost:3000';
 
