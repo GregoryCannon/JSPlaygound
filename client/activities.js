@@ -331,19 +331,51 @@ const ACTIVITIES_ADVANCED_UNIT_TESTING = [
   },
 ];
 
-const SAMPLES_ARRAYS = [];
-const ACTIVITIES_ARRAYS = [];
+const SAMPLES_ARRAYS = [
+  {
+    title: 'Creating Arrays',
+    instructions: 'This sample shows how to create arrays of numbers and strings.',
+    code: 'var toys = ["train", "headphones", "toy car"]\n\nvar prices = [1000, 1500, 5000]'
+  },
+  {
+    title: 'Looping through Arrays',
+    instructions: 'This sample shows how to print every item in an array',
+    code: 'var toys = ["train", "headphones", "toy car"]\n\nfor (var i = 0; i < toys.length; i++) {\n\tprint(toys[i])\n}'
+  },
+  {
+    title: 'Adding to Arrays',
+    instructions: 'This sample shows how to use push() to add elements to an array',
+    code: 'var toys = ["train", "headphones", "toy car"]\ntoys.push("hat")\ntoys.push("bracelet")\n\nprint(toys)'
+  },
+];
+const ACTIVITIES_ARRAYS = [
+  {
+    title: 'Warm-up Activity',
+    instructions: 'Can you print the length of this list?',
+    code: 'var toys = ["train", "headphones", "toy car"]\n\nprint() // ?'
+  },
+  {
+    title: 'Sorting a List',
+    instructions: 'Can you sort this list alphabetically?',
+    code: 'var studentNames = ["Xiyi", "Taroko", "Zeus", "Amy"]\n\n// ?\n\nprint(studentNames)'
+  },
+  {
+    title: 'Gift Budget',
+    instructions: 'Can you add up how much the total cost of these gifts is?',
+    code: 'var giftPrices = [10, 35, 21, 6]\n\n// ?'
+  },
+];
 
-let ACTIVITY_LOOKUP = {};
-ACTIVITY_LOOKUP[Titles.FOR_LOOP] = ACTIVITIES_FOR_LOOP;
-ACTIVITY_LOOKUP[Titles.FUNCTIONS] = ACTIVITIES_FUNCTIONS;
-ACTIVITY_LOOKUP[Titles.UNIT_TESTING] = ACTIVITIES_UNIT_TESTING;
-ACTIVITY_LOOKUP[Titles.ADVANCED_UNIT_TESTING] = ACTIVITIES_ADVANCED_UNIT_TESTING;
-ACTIVITY_LOOKUP[Titles.ARRAYS] = ACTIVITIES_ARRAYS;
+let ACTIVITIES_LISTS = {};
+ACTIVITIES_LISTS[Titles.FOR_LOOP] = ACTIVITIES_FOR_LOOP;
+ACTIVITIES_LISTS[Titles.FUNCTIONS] = ACTIVITIES_FUNCTIONS;
+ACTIVITIES_LISTS[Titles.UNIT_TESTING] = ACTIVITIES_UNIT_TESTING;
+ACTIVITIES_LISTS[Titles.ADVANCED_UNIT_TESTING] = ACTIVITIES_ADVANCED_UNIT_TESTING;
+ACTIVITIES_LISTS[Titles.ARRAYS] = ACTIVITIES_ARRAYS;
 
-let SAMPLES_LOOKUP = {};
-SAMPLES_LOOKUP[Titles.FOR_LOOP] = SAMPLES_FOR_LOOP;
-SAMPLES_LOOKUP[Titles.FUNCTIONS] = SAMPLES_FUNCTIONS;
-SAMPLES_LOOKUP[Titles.UNIT_TESTING] = SAMPLES_UNIT_TESTING;
-SAMPLES_LOOKUP[Titles.ADVANCED_UNIT_TESTING] = SAMPLES_ADVANCED_UNIT_TESTING;
-SAMPLES_LOOKUP[Titles.ARRAYS] = SAMPLES_ARRAYS;
+let SAMPLES_LISTS = {};
+SAMPLES_LISTS[Titles.FOR_LOOP] = SAMPLES_FOR_LOOP;
+SAMPLES_LISTS[Titles.FUNCTIONS] = SAMPLES_FUNCTIONS;
+SAMPLES_LISTS[Titles.UNIT_TESTING] = SAMPLES_UNIT_TESTING;
+SAMPLES_LISTS[Titles.ADVANCED_UNIT_TESTING] = SAMPLES_ADVANCED_UNIT_TESTING;
+SAMPLES_LISTS[Titles.ARRAYS] = SAMPLES_ARRAYS;

@@ -64,11 +64,11 @@ button {
     font-size: 22px;
 }
 
-#presets {
+#samples {
     margin: 20px 0;
 }
 
-#presets>button {
+#samples>button {
     margin-right: 5px;
     margin-top: 5px;
     background-color: cornsilk;
@@ -82,6 +82,10 @@ button {
     background-color: rgb(220, 255, 239);
     border: 1px solid grey;
     padding: 3px 8px;
+}
+
+#student-code-title {
+    margin: 5px;
 }
 
 #run-button {

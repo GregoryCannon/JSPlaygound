@@ -3,7 +3,7 @@ const NEWLINE = '<br/>';
 
 // Config variables
 const NUM_TEST_CASES = 5;
-const IS_PROD = true;
+const IS_PROD = false;
 const SERVER_URL =
   IS_PROD ? 'https://csinenglish.herokuapp.com' : 'http://localhost:3000';
 
@@ -46,14 +46,6 @@ const BREAKOUT_ROOMS = [
 // });
 
 const GlobalState = {
-  currentLesson: "AdvUnitTests", // Currently unused
-  isUnitTestSetup: true
-}
-
-function getSamples(){
-  return SAMPLES_LOOKUP[GlobalState.currentLesson]
-}
-
-function getActivities() {
-  return ACTIVITY_LOOKUP[GlobalState.currentLesson]
+  currentLesson: Titles.ARRAYS, // Currently unused
+  isUnitTestSetup: false  
 }

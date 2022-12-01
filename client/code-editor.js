@@ -1,9 +1,14 @@
+const NO_QUESTION = "noquestion";
+
 class CodeEditor {
   constructor(
     userRole, uiElts) {
     this.userRole = userRole;
     this.codeTextArea = uiElts.codeTextArea;
     this.codeContainer = uiElts.codeContainer;
+    this.samplesContainer = uiElts.samplesContainer;
+    this.activitiesContainer = uiElts.activitiesContainer;
+    this.outputSection = uiElts.outputSection;
     this.renderedCodeContainer = uiElts.renderedCodeContainer;
     this.outputDiv = uiElts.outputDiv;
     this.studentButtonContainer = uiElts.studentButtonContainer;
@@ -26,10 +31,11 @@ class CodeEditor {
     allowTabbing(codeTextArea, this.onCodeChangedByUser);
 
     // State variables
+    this.dataModel = this.getDefaultDataModel();
     this.hasChangedCode = false;
     this.codeVersion = 0;
     this.userName = '';
-    this.studentCodeLookup = null;
+    this.dataLookupByStudent = null;
     this.ticksUntilPush = -1;
     this.ticksSinceLastRefreshCount = 0;
     this.numRefreshesSinceLastCount = 0;
@@ -38,8 +44,9 @@ class CodeEditor {
     this.tickLoop();
   }
 
+  /** Helper method to automatically loop over all test cases */
   forEachTestCase = (consumerFun) => {
-    for (let i = 0; i < NUM_TEST_CASES; i++){
+    for (let i = 0; i < NUM_TEST_CASES; i++) {
       const caseInput = document.getElementById("case-" + i);
       const answerInput = document.getElementById("answer-" + i);
       const outputDiv = document.getElementById("output-" + i);
@@ -54,11 +61,10 @@ class CodeEditor {
 
   incrementVersion =
     () => {
-      console.log('Old version', this.codeVersion);
       this.codeVersion = Math.floor(this.codeVersion) +
         (this.userRole == ROLE.STUDENT ? STUDENT_VERSION_INCREMENT :
           TEACHER_VERSION_INCREMENT);
-      console.log('New version', this.codeVersion);
+      console.log('Incremented local code version to:', this.codeVersion);
     }
 
   /** 
@@ -81,9 +87,16 @@ class CodeEditor {
     return (textBoxElt.readOnly ? LOCK_MARKER : "") + textBoxElt.value
   }
 
+  loadDataModelToUi = (newVersion, newDataModel) => {
+    this.dataModel = newDataModel;
+    this.codeVersion = newVersion;
+    this.selectQuestion(newDataModel.currentQuestion);
+    this.codeVersion = newVersion;
+  }
+
   /** Loads any code into the UI. */
-  loadCodeToUi =
-    (newVersion, newCode) => {
+  loadSingleQuestionCodeToUi =
+    (newCode) => {
       const split = newCode.split(TEST_CONCAT_DELIM);
       console.log("split code:", split);
 
@@ -101,32 +114,66 @@ class CodeEditor {
         }
         i++
       })
-      this.codeVersion = newVersion;
       this.onCodeChanged(/* byUser= */ false);
       this.outputDiv.innerHTML = '';
     }
 
-  /** Loads a piece of starter code to the UI. 
-   * @param codeSample { title: string, instructions: string, code: string }
-   */
-  loadSampleCode =
-    (codeSample) => {
-      document.getElementById('instructions').innerHTML = codeSample.instructions || '';
-
-      // Set version to the next clean multiple of the
-      // LOAD_SAMPLE_CODE_INCREMENT
-      const nextMultiple = (num, base) =>
-        base * (Math.floor(num - 0.000001) / base + 1)
-      const newVersion =
-        nextMultiple(this.codeVersion, LOAD_SAMPLE_CODE_INCREMENT);
-
-      this.loadCodeToUi(newVersion, codeSample.code);
-      if (GlobalState.isUnitTestSetup) {
-        this.resetTestResults();
+  loadSamplesAndActivies = () => {
+    SAMPLES_LISTS[GlobalState.currentLesson].forEach((sample) => {
+      if (sample === 'newline') {
+        this.samplesContainer.appendChild(document.createElement('br'));
+        return;
       }
-      this.hasChangedCode = true;
-      this.schedulePush();
+      const button = document.createElement('button');
+      button.innerHTML = sample.title;
+      button.onclick = () => this.selectQuestion(sample.title);
+      this.samplesContainer.appendChild(button);
+    })
+
+    ACTIVITIES_LISTS[GlobalState.currentLesson].forEach((sample) => {
+      if (sample === 'newline') {
+        this.activitiesContainer.appendChild(document.createElement('br'));
+        return;
+      }
+      const button = document.createElement('button');
+      button.innerHTML = sample.title;
+      button.onclick = () => this.selectQuestion(sample.title);
+      this.activitiesContainer.appendChild(button);
+    })
+
+    console.log("Loading samples and activities", GlobalState, this.testCasesContainer);
+    if (GlobalState.isUnitTestSetup) {
+      outputSection.style.display = "none";
+      this.testCasesContainer.style.display = 'block';
+    } else {
+      this.testCasesContainer.style.display = 'none';
+      outputSection.style.display = 'block';
     }
+  }
+
+  /** Selects a given question */
+  selectQuestion = (questionTitle) => {
+    this.dataModel.currentQuestion = questionTitle;
+    this.loadSingleQuestionCodeToUi(this.dataModel[questionTitle].code);
+    document.getElementById('instructions').innerHTML = this.dataModel[questionTitle].instructions;
+  }
+
+  /** Loads all the sample code into the current code lookup */
+  getDefaultDataModel = () => {
+    const defaultDataModel = {}
+    defaultDataModel[NO_QUESTION] = { title: "", instructions: "Select a code sample or an activity above.", code: "" };
+    defaultDataModel.currentQuestion = NO_QUESTION;
+
+    // Add the code samples to the default data model
+    SAMPLES_LISTS[GlobalState.currentLesson].forEach((sample) => {
+      defaultDataModel[sample.title] = sample
+    })
+    ACTIVITIES_LISTS[GlobalState.currentLesson].forEach((sample) => {
+      defaultDataModel[sample.title] = sample
+    })
+
+    return defaultDataModel;
+  }
 
   resetTestResults = () => {
     this.forEachTestCase((_, __, output) => {
@@ -149,7 +196,7 @@ class CodeEditor {
 
       const expectedAnswer = answerElt.value.replace(/"|'/g, ""); // Remove quotes from the answer
       const expectException = expectedAnswer.includes("Exception")
-      
+
       // Execute the test code
       let realAnswer;
       let gotRuntimeException = false;
@@ -215,15 +262,8 @@ class CodeEditor {
         this.hasChangedCode = false;
       }
 
-      // Maybe show a notification that a teacher has edited your code
-      if (this.userRole === ROLE.STUDENT &&
-        this.remoteEditNotificationText !== null) {
-        if (!Number.isInteger(this.codeVersion) && !this.hasChangedCode) {
-          this.remoteEditNotificationText.style.visibility = 'visible';
-        } else {
-          this.remoteEditNotificationText.style.visibility = 'hidden';
-        }
-      }
+      // Update the local data lookup
+      this.updateDataModel();
 
       // Update the rendered layer to overlay the input layer pixel-for-pixel
       this.renderCodeWithSyntaxHighlighting(
@@ -255,7 +295,7 @@ class CodeEditor {
 
       // Get new list
       let newList = [];
-      for (const student of Object.keys(this.studentCodeLookup).sort()) {
+      for (const student of Object.keys(this.dataLookupByStudent).sort()) {
         const [studentRoom, studentName] = student.split(' | ');
         if (studentRoom !== taRoom && taRoom !== '(all rooms)') {
           continue;
@@ -277,6 +317,9 @@ class CodeEditor {
           const button = document.createElement('button');
           button.innerHTML = studentName;
           button.onclick = () => {
+            if (activitiesContainer.children.length == 0) {
+              this.loadSamplesAndActivies();
+            }
             this.setUserName(student);
             this.studentCodeTitle.innerHTML = `${student}'s Code:`
             this.resetTestResults();
@@ -364,15 +407,18 @@ class CodeEditor {
     (newName) => {
       this.userName = newName;
 
+      // Show the editor section for the first time
       if (newName) {
         this.codeTextArea.style.visibility = 'visible';
-        this.testCasesContainer.style.display = "block";
+        if (GlobalState.isUnitTestSetup) {
+          this.testCasesContainer.style.display = "block";
+        }
       }
 
       // Maybe load their code from the map
-      if (this.studentCodeLookup !== null && this.studentCodeLookup.hasOwnProperty(newName)) {
-        const [remoteVersion, remoteCode] = this.studentCodeLookup[this.userName];
-        this.loadCodeToUi(remoteVersion, remoteCode)
+      if (this.dataLookupByStudent !== null && this.dataLookupByStudent.hasOwnProperty(newName)) {
+        const [remoteVersion, remoteCodeObj] = this.dataLookupByStudent[this.userName];
+        this.loadDataModelToUi(remoteVersion, remoteCodeObj);
       } else {
         console.log('Set user name, not loading from map')
         // Schedule an initial push to show that the user is present
@@ -428,40 +474,57 @@ class CodeEditor {
           this.numRefreshesSinceLastCount += 1;
           // Pull code
           if (newMap.hasOwnProperty(this.userName)) {
-            const [remoteVersion, remoteCode] = newMap[this.userName];
+            const [remoteVersion, remoteCodeObj] = newMap[this.userName];
+            const oldVersion = this.codeVersion
+            console.log("Pulled from server. New version:", remoteVersion, "Old:", oldVersion);
 
             // Maybe load code to the UI
-            if (remoteVersion > this.codeVersion) {
-              this.loadCodeToUi(remoteVersion, remoteCode)
-            }
+            if (remoteVersion > oldVersion) {
+              // Maybe show a notification that a teacher has edited your code
+              if (this.userRole === ROLE.STUDENT &&
+                this.remoteEditNotificationText !== null) {
+                if (!Number.isInteger(this.codeVersion) && !this.hasChangedCode) {
+                  this.remoteEditNotificationText.style.visibility = 'visible';
+                } else {
+                  this.remoteEditNotificationText.style.visibility = 'hidden';
+                }
+              }
 
+              this.loadDataModelToUi(remoteVersion, remoteCodeObj)
+            }
             // If teacher, maybe overwrite student code
-            if (this.userRole === ROLE.TEACHER &&
-              remoteVersion < this.codeVersion) {
-              newMap[this.userName] =
-                [this.codeVersion, codeTextArea.value];
+            else if (this.userRole === ROLE.TEACHER &&
+              remoteVersion < oldVersion) {
+              const updatedDataModel = JSON.parse(JSON.stringify(this.dataModel));
+              newMap[this.userName] = [this.codeVersion, updatedDataModel];
             }
           }
 
           // Pull student list
           if (this.userRole === ROLE.TEACHER) {
-            this.studentCodeLookup = newMap;
+            this.dataLookupByStudent = newMap;
             this.renderStudentButtons();
           }
         });
     }
 
-  getCode = () => {
+  updateDataModel = () => {
+    const newLookup = JSON.parse(JSON.stringify(this.dataModel));
+    let currentQuestionCode = this.getCodeSegmentFromTextBox(this.codeTextArea);
+    // Maybe add unit test code
     if (GlobalState.isUnitTestSetup) {
-      let codeConcatenated = this.getCodeSegmentFromTextBox(this.codeTextArea);
       this.forEachTestCase((caseElt, answerElt, _) => {
         if (caseElt && answerElt) {
-          codeConcatenated += DELIM + this.getCodeSegmentFromTextBox(caseElt)
-          codeConcatenated += DELIM + this.getCodeSegmentFromTextBox(answerElt);
+          currentQuestionCode += DELIM + this.getCodeSegmentFromTextBox(caseElt)
+          currentQuestionCode += DELIM + this.getCodeSegmentFromTextBox(answerElt);
         }
       })
-      return codeConcatenated;
     }
+    // Update the local question -> code map
+    console.log("New code:", currentQuestionCode, this.dataModel.currentQuestion, this.dataModel);
+    newLookup[this.dataModel.currentQuestion].code = currentQuestionCode;
+    console.log("New lookup:", newLookup);
+    this.dataModel = newLookup;
   }
 
   pushToServer =
@@ -472,7 +535,7 @@ class CodeEditor {
           {
             name: this.userName,
             version: this.codeVersion,
-            code: this.getCode()
+            dataModel: this.dataModel
           },
           () => { console.log('Posted to server.') });
         this.hasChangedCode = false;

@@ -3,6 +3,8 @@ const studentCodeTitle = document.getElementById('student-code-title');
 
 const outputDiv = document.getElementById('output-div');
 const outputSection = document.getElementById('output-section');
+const samplesContainer = document.getElementById('samples');
+const activitiesContainer = document.getElementById('activities');
 const codeTextArea = document.getElementById('code-area');
 const codeContainer = document.getElementById('code-container');
 const renderedCodeContainer =
@@ -24,7 +26,10 @@ const editor = new CodeEditor(
     studentCodeTitle,
     remoteEditNotificationText: null,
     testCasesContainer,
-    testCasesOutputContainer
+    testCasesOutputContainer,
+    samplesContainer,
+    activitiesContainer,
+    outputSection
   });
 
 // Get a list of breakout rooms

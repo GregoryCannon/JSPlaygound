@@ -6,7 +6,7 @@ const codeContainer = document.getElementById('code-container');
 const renderedCodeContainer =
   document.getElementById('rendered-code-container');
 const runCodeButton = document.getElementById('run-button');
-const presetsContainer = document.getElementById('presets');
+const samplesContainer = document.getElementById('samples');
 const activitiesContainer = document.getElementById('activities');
 const teacherEditNotification =
   document.getElementById('teacher-edit-notification');
@@ -42,9 +42,7 @@ function login() {
     loggedInView.style.display = 'inline';
     loginForm.style.display = 'none';
 
-    GlobalState.isUnitTestSetup = true;
-
-    loadSamplesAndAcitivies();
+    editor.loadSamplesAndActivies();
   } else {
     alert('Breakout room or name missing.')
   }
@@ -59,39 +57,7 @@ function loginForReview() {
   GlobalState.currentLesson = lessonPicker.value;
   GlobalState.isUnitTestSetup = lessonPicker.value === Titles.UNIT_TESTING || lessonPicker.value == Titles.ADVANCED_UNIT_TESTING;
   console.log(GlobalState);
-  loadSamplesAndAcitivies();
-}
-
-function loadSamplesAndAcitivies() {
-  getSamples().forEach((sample, i) => {
-    if (sample === 'newline') {
-      presetsContainer.appendChild(document.createElement('br'));
-      return;
-    }
-    const button = document.createElement('button');
-    button.innerHTML = sample.title;
-    button.onclick = () => editor.loadSampleCode(getSamples()[i]);
-    presetsContainer.appendChild(button);
-  })
-
-  getActivities().forEach((sample, i) => {
-    if (sample === 'newline') {
-      activitiesContainer.appendChild(document.createElement('br'));
-      return;
-    }
-    const button = document.createElement('button');
-    button.innerHTML = sample.title;
-    button.onclick = () => editor.loadSampleCode(getActivities()[i]);
-    activitiesContainer.appendChild(button);
-  })
-
-  if (GlobalState.isUnitTestSetup){
-    outputSection.style.display = "none";
-    testCasesContainer.style.display = 'block';
-  } else {
-    testCasesContainer.style.display = 'none';
-    outputSection.style.display = 'block';
-  }
+  editor.loadSamplesAndActivies();
 }
 
 /* ------------------
@@ -112,7 +78,10 @@ const editor = new CodeEditor(
     studentCodeTitle: null,
     remoteEditNotificationText: teacherEditNotification,
     testCasesContainer,
-    testCasesOutputContainer
+    testCasesOutputContainer,
+    samplesContainer,
+    activitiesContainer,
+    outputSection
   });
 
 // setTimeout(promptForUserName, 10);

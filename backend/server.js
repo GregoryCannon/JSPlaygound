@@ -2,7 +2,7 @@
 const express = require('express');
 const path = require('path');
 
-const codeMap = {};
+const dataLookupByStudent = {};
 let antiDdosMultiplier = 1.0;
 
 // New app using express module
@@ -27,17 +27,17 @@ app.use((req, res, next) => {
 });
 
 app.get('/data', function (req, res) {
-  res.end(JSON.stringify([codeMap, antiDdosMultiplier]));
+  res.end(JSON.stringify([dataLookupByStudent, antiDdosMultiplier]));
 });
 
 app.post('/', function(req, res) {
   console.log(req.body);
   const name = req.body.name;
   const version = req.body.version;
-  const code = req.body.code;
+  const dataModel = req.body.dataModel;
 
-  if (!codeMap.hasOwnProperty(name) || version > codeMap[name][0]) {
-    codeMap[name] = [version, code];
+  if (!dataLookupByStudent.hasOwnProperty(name) || version > dataLookupByStudent[name][0]) {
+    dataLookupByStudent[name] = [version, dataModel];
   }
 
   res.end('added to map');
@@ -53,7 +53,7 @@ app.post("/ddos", function (req, res) {
 })
 
 app.delete('/', function(req, res) {
-  codeMap = {};
+  dataLookupByStudent = {};
 })
 
 app.listen(process.env.PORT || 3000, function() {
