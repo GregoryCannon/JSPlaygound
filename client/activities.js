@@ -340,25 +340,30 @@ const SAMPLES_ARRAYS = [
   {
     title: 'Looping through Arrays',
     instructions: 'This sample shows how to print every item in an array',
-    code: 'var toys = ["train", "headphones", "toy car"]\n\nfor (var i = 0; i < toys.length; i++) {\n\tprint(toys[i])\n}'
+    code: 'var toyList = ["train", "headphones", "toy car"]\n\nfor (var toy of toyList) {\n\tprint(toy)\n}'
   },
   {
-    title: 'Adding to Arrays',
-    instructions: 'This sample shows how to use push() to add elements to an array',
-    code: 'var toys = ["train", "headphones", "toy car"]\ntoys.push("hat")\ntoys.push("bracelet")\n\nprint(toys)'
+    title: 'List Operations',
+    instructions: 'This sample shows how to use list operations (push, length, and sort)',
+    code: 'var toys = ["train", "headphones", "toy car"]\n\n// Add an element using push()\ntoys.push("hat")\n\n// Sort the list\ntoys.sort()\n\n// Get the length\nprint(toys.length)'
   },
 ];
 const ACTIVITIES_ARRAYS = [
   {
     title: 'Warm-up Activity',
     instructions: 'Can you print the length of this list?',
-    code: 'var toys = ["train", "headphones", "toy car"]\n\nprint() // ...?'
+    code: 'var toys = ["train", "headphones", "toy car"]\n\nprint() // ?'
   },
   {
-    title: 'Sorting a List',
-    instructions: 'Can you sort this list alphabetically?',
-    code: 'var studentNames = ["Xiyi", "Taroko", "Zeus", "Amy"]\n\n// ...?\n\nprint(studentNames)'
+    title: 'Using Index',
+    instructions: 'Can you print the element at index 2 in this list?',
+    code: 'var toys = ["train", "headphones", "toy car"]\n\nprint() // ?'
   },
+  // {
+  //   title: 'Sorting a List',
+  //   instructions: 'Can you sort this list alphabetically?',
+  //   code: 'var studentNames = ["Xiyi", "Taroko", "Zeus", "Amy"]\n\n// ...?\n\nprint(studentNames)'
+  // },
   {
     title: 'Gift Budget',
     instructions: 'Can you add up how much the total cost of these gifts is?',
@@ -366,15 +371,20 @@ const ACTIVITIES_ARRAYS = [
   },
   "newline",
   {
+    title: 'Combining Lists',
+    instructions: 'Sam has her Christmas list already, but she has a second list of new ideas. Can you add all of them to her main list?',
+    code: 'var christmasList = ["Phone case", "Airpods", "Action figure"]\nvar newIdeas = ["Seltzer machine", "Manga"]\n\n// ?\n\nprint(christmasList)',
+  },
+  {
     title: 'Do they want it?',
     instructions: 'Can you make a function that takes a gift and checks if it\'s on someone\'s Christmas list?',
     code: 'var list = ["Mario Kart game", "Lego set", "Friendship bracelet"]\n\nfunction isInList(giftIdea) {\n\t// ...?\n}\n\nprint("Lego set: " + isInList("Lego set"))\nprint("Guitar: " + isInList("Guitar"))'
   },
-  {
-    title: 'Naughty or Nice?',
-    instructions: 'We have two lists: one for "naughty" kids and one for "nice" kids. Can you make a function that checks which list a kid is on?',
-    code: 'var naughtyList = ["Braidon", "Emilia", "Tomo", "Greg"]\nvar niceList = ["Kenji", "Kokoro", "Ai", "Adam"]\n\nfunction naughtyOrNice(name) {\n\t// ...?\n}\n\nprint("Kokoro: " + naughtyOrNice("Kokoro"))\nprint("Emilia: " + naughtyOrNice("Emilia"))'
-  },
+  // {
+  //   title: 'Naughty or Nice?',
+  //   instructions: 'We have two lists: one for "naughty" kids and one for "nice" kids. Can you make a function that checks which list a kid is on?',
+  //   code: 'var naughtyList = ["Braidon", "Emilia", "Tomo", "Greg"]\nvar niceList = ["Kenji", "Kokoro", "Ai", "Adam"]\n\nfunction naughtyOrNice(name) {\n\t// ...?\n}\n\nprint("Kokoro: " + naughtyOrNice("Kokoro"))\nprint("Emilia: " + naughtyOrNice("Emilia"))'
+  // },
   {
     title: 'Challenge Problem',
     instructions: 'One thing you can do with lists is use lists of lists! Can you make a function that finds the most expensive gift in a list?',
