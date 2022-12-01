@@ -183,50 +183,50 @@ const ACTIVITIES_UNIT_TESTING = [
     title: 'Warm-Up Activity',
     instructions: 'Can you add more tests for this double() function?',
     code: '// Doubles a number\nfunction double(number) {\n\treturn number * 2\n}'
-    + DELIM + 'double(5)' + DELIM + '10'
-    + DELIM + 'double(0)' + DELIM + '0'
+      + DELIM + 'double(5)' + DELIM + '10'
+      + DELIM + 'double(0)' + DELIM + '0'
   },
   {
     title: 'Can You Afford?',
     instructions: 'Can you add more tests for this canAfford() function? Look for edge cases!',
-    code: 
-    '// Checks if you have enough money to buy something\nfunction canAfford(yourMoney, cost) {\n\tif (cost > yourMoney) {\n\t\treturn false  // Too expensive!\n\t} else {\n\t\treturn true   // Can afford!\n\t}\n}'
-    + DELIM + 'canAfford(200, 100)' + DELIM + 'true'
+    code:
+      '// Checks if you have enough money to buy something\nfunction canAfford(yourMoney, cost) {\n\tif (cost > yourMoney) {\n\t\treturn false  // Too expensive!\n\t} else {\n\t\treturn true   // Can afford!\n\t}\n}'
+      + DELIM + 'canAfford(200, 100)' + DELIM + 'true'
   },
   {
     title: 'Fixing Tests',
     instructions:
       'Some of these tests aren\'t correct! Can you fix them?',
     code:
-    '// Calculates how much change you\'ll get from a vending machine\nfunction getChange(yourMoney, cost) {\n\tif (cost > yourMoney) {\n\t\treturn "Not enough money"\n\t} else {\n\t\t// Use subtraction to calculate the change\n\t\treturn yourMoney - cost\n\t}\n}'
-    + DELIM + 'getChange(200, 100)' + DELIM + '60'
-    + DELIM + 'getChange("cow", 10)' + DELIM + '50'
-    + DELIM + 'getChange(40, 30)' + DELIM + '10'
-    + DELIM + 'getChange(25, 100)' + DELIM + '75'
-    + DELIM + 'getChange(500, 100)' + DELIM + 'Not enough money'
+      '// Calculates how much change you\'ll get from a vending machine\nfunction getChange(yourMoney, cost) {\n\tif (cost > yourMoney) {\n\t\treturn "Not enough money"\n\t} else {\n\t\t// Use subtraction to calculate the change\n\t\treturn yourMoney - cost\n\t}\n}'
+      + DELIM + 'getChange(200, 100)' + DELIM + '60'
+      + DELIM + 'getChange("cow", 10)' + DELIM + '50'
+      + DELIM + 'getChange(40, 30)' + DELIM + '10'
+      + DELIM + 'getChange(25, 100)' + DELIM + '75'
+      + DELIM + 'getChange(500, 100)' + DELIM + 'Not enough money'
   },
   {
     title: 'Fixing the Function',
     instructions:
       'Something isn\'t quite right about this function. Can you use the tests to figure out what it is?',
     code:
-    '// Checks the price of items\nfunction getCost(drinkName) {\n\tif (drinkName == "calpico") {\n\t\treturn 140\n\t}\n\tif (drinkName == "oi ocha") {\n\t\treturn 200\n\t}\n\tif (drinkName == "pepso") {\n\t\treturn 180\n\t}\n}'
-    + DELIM + 'getCost("calpico")' + DELIM + '140'
-    + DELIM + 'getCost("oi ocha")' + DELIM + '160'
-    + DELIM + 'getCost("pepsi")' + DELIM + '180'
-    + DELIM + 'getCost("seltzer")' + DELIM + '250'
+      '// Checks the price of items\nfunction getCost(drinkName) {\n\tif (drinkName == "calpico") {\n\t\treturn 140\n\t}\n\tif (drinkName == "oi ocha") {\n\t\treturn 200\n\t}\n\tif (drinkName == "pepso") {\n\t\treturn 180\n\t}\n}'
+      + DELIM + 'getCost("calpico")' + DELIM + '140'
+      + DELIM + 'getCost("oi ocha")' + DELIM + '160'
+      + DELIM + 'getCost("pepsi")' + DELIM + '180'
+      + DELIM + 'getCost("seltzer")' + DELIM + '250'
   },
   'newline',
   {
     title: 'Challenge: Coding Interview',
     instructions:
       'Can you code a function that will pass all of the given unit tests?',
-    code: 'function orderDrink (drinkName, moneyInserted) {\n\t// ?\n}\n\n// Side Note 1: to create a variable, do the following:\n//		var myAge = 10    \n\n// Side Note 2: to combine a number and a string, use '+'\n//		return "My age is: " + myAge'
-    + DELIM + 'orderDrink("oi ocha", 150)' + DELIM + 'Not enough money'
-    + DELIM + 'orderDrink("oi ocha", 180)' + DELIM + 'Your change: 20'
-    + DELIM + 'orderDrink("pepsi", 180)' + DELIM + 'Out of stock'
-    + DELIM + 'orderDrink("calpico", 140)' + DELIM + 'Out of stock'
-    + DELIM + 'orderDrink("oi ocha", 2000)' + DELIM + 'We only accept bills of 1000 or lower'
+    code: 'function orderDrink (drinkName, moneyInserted) {\n\t// ?\n}\n\n// Side Note 1: to create a variable, do the following:\n//		var myAge = 10    \n\n// Side Note 2: to combine a number and a string, use ' + '\n//		return "My age is: " + myAge'
+      + DELIM + 'orderDrink("oi ocha", 150)' + DELIM + 'Not enough money'
+      + DELIM + 'orderDrink("oi ocha", 180)' + DELIM + 'Your change: 20'
+      + DELIM + 'orderDrink("pepsi", 180)' + DELIM + 'Out of stock'
+      + DELIM + 'orderDrink("calpico", 140)' + DELIM + 'Out of stock'
+      + DELIM + 'orderDrink("oi ocha", 2000)' + DELIM + 'We only accept bills of 1000 or lower'
   },
 ];
 
@@ -283,39 +283,39 @@ const ACTIVITIES_ADVANCED_UNIT_TESTING = [
     title: 'Warm-Up Activity',
     instructions: 'Can you add tests to this function to make sure it throws exceptions for bad input? (e.g. strings, booleans)',
     code: LOCK_MARKER + '// Doubles a number\nfunction double(userInput) {\n\tif (typeof(userInput) != "number") {\n\t\tthrow("Input must be a number")\n\t}\n\treturn userInput * 2\n}'
-    + DELIM + LOCK_MARKER + 'double(5)' + DELIM + LOCK_MARKER + '10'
-    + DELIM + LOCK_MARKER + 'double(0)' + DELIM + LOCK_MARKER + '0'
+      + DELIM + LOCK_MARKER + 'double(5)' + DELIM + LOCK_MARKER + '10'
+      + DELIM + LOCK_MARKER + 'double(0)' + DELIM + LOCK_MARKER + '0'
   },
   {
     title: 'Can you Vote?',
     instructions: 'Can you add more tests for this canVote() function? Look for edge cases!',
-    code: 
-    LOCK_MARKER + '// Checks if you are old enough to vote\nfunction canVote(age) {\n\tif (typeof(age) != \"number\") {\n\t\tthrow("Input must be a number")\n\t}\n\tif (age >= 18) {\n\t\treturn true  // Can vote!\n\t} else {\n\t\treturn false   // Not old enough\n\t}\n}'
-    + DELIM + LOCK_MARKER + 'canVote(24)' + DELIM + LOCK_MARKER + 'true'
+    code:
+      LOCK_MARKER + '// Checks if you are old enough to vote\nfunction canVote(age) {\n\tif (typeof(age) != \"number\") {\n\t\tthrow("Input must be a number")\n\t}\n\tif (age >= 18) {\n\t\treturn true  // Can vote!\n\t} else {\n\t\treturn false   // Not old enough\n\t}\n}'
+      + DELIM + LOCK_MARKER + 'canVote(24)' + DELIM + LOCK_MARKER + 'true'
   },
   {
     title: 'Fixing Tests',
     instructions:
       'Some of these tests aren\'t correct! Can you fix them?',
     code:
-    LOCK_MARKER + '// Reverses a string\nfunction reverse(inputString) {\n\tif (typeof(inputString) != \"string\") {\n\t\tthrow("Input must be a string")\n\t}\n\t// Don\'t worry about how this works\n\treturn inputString.split(\'\').reverse().join(\'\')\n}'
-    + DELIM + 'reverse("abcde")' + DELIM + 'edcba'
-    + DELIM + 'reverse("cow")' + DELIM + 'wo'
-    + DELIM + 'reverse(100)' + DELIM + '001'
-    + DELIM + 'reverse(reverse("123"))' + DELIM + '321'
-    + DELIM + 'revrers("hello")' + DELIM + 'olleh'
+      LOCK_MARKER + '// Reverses a string\nfunction reverse(inputString) {\n\tif (typeof(inputString) != \"string\") {\n\t\tthrow("Input must be a string")\n\t}\n\t// Don\'t worry about how this works\n\treturn inputString.split(\'\').reverse().join(\'\')\n}'
+      + DELIM + 'reverse("abcde")' + DELIM + 'edcba'
+      + DELIM + 'reverse("cow")' + DELIM + 'wo'
+      + DELIM + 'reverse(100)' + DELIM + '001'
+      + DELIM + 'reverse(reverse("123"))' + DELIM + '321'
+      + DELIM + 'revrers("hello")' + DELIM + 'olleh'
   },
   {
     title: 'Fixing the Function',
     instructions:
       'This function isn\'t quite right, can you fix it so that all the tests pass?',
     code:
-    '// Checks if the library has a book\nfunction checkForBook(title) {\n\tif (typeof(title) != "string") {\n\t\treturn false\n\t}\n\tif (title == "harry potter") {\n\t\treturn true\n\t} else if (title == "hunger games") {\n\t\treturn true\n\t} else {\n\t\treturn false\n\t}\n}'
-    + DELIM + LOCK_MARKER + 'checkForBook("Harry Potter")' + DELIM + LOCK_MARKER + 'true'
-    + DELIM + LOCK_MARKER + 'checkForBook(12)' + DELIM + LOCK_MARKER + 'Exception'
-    + DELIM + LOCK_MARKER + 'checkForBook("Twilight")' + DELIM + LOCK_MARKER + 'false'
-    + DELIM + LOCK_MARKER + 'checkForBook("Attack on Titan")' + DELIM + LOCK_MARKER + 'true'
-    + DELIM + LOCK_MARKER + '' + DELIM + LOCK_MARKER + ''
+      '// Checks if the library has a book\nfunction checkForBook(title) {\n\tif (typeof(title) != "string") {\n\t\treturn false\n\t}\n\tif (title == "harry potter") {\n\t\treturn true\n\t} else if (title == "hunger games") {\n\t\treturn true\n\t} else {\n\t\treturn false\n\t}\n}'
+      + DELIM + LOCK_MARKER + 'checkForBook("Harry Potter")' + DELIM + LOCK_MARKER + 'true'
+      + DELIM + LOCK_MARKER + 'checkForBook(12)' + DELIM + LOCK_MARKER + 'Exception'
+      + DELIM + LOCK_MARKER + 'checkForBook("Twilight")' + DELIM + LOCK_MARKER + 'false'
+      + DELIM + LOCK_MARKER + 'checkForBook("Attack on Titan")' + DELIM + LOCK_MARKER + 'true'
+      + DELIM + LOCK_MARKER + '' + DELIM + LOCK_MARKER + ''
   },
   'newline',
   {
@@ -323,11 +323,11 @@ const ACTIVITIES_ADVANCED_UNIT_TESTING = [
     instructions:
       'Can you code a function that will pass all of the given unit tests?',
     code: 'function buyBook (title, moneyYouHave) {\n\t// ?\n}'
-    + DELIM + LOCK_MARKER + 'buyBook("Doraemon", 100)' + DELIM + LOCK_MARKER + 'Not enough money'
-    + DELIM + LOCK_MARKER + 'buyBook("Code Geass", 800)' + DELIM + LOCK_MARKER + 'Your change: 200'
-    + DELIM + LOCK_MARKER + 'buyBook("Doraemon", 500)' + DELIM + LOCK_MARKER + 'Your change: 0'
-    + DELIM + LOCK_MARKER + 'buyBook(100, "Hunter x Hunter")' + DELIM + LOCK_MARKER + 'Exception'
-    + DELIM + LOCK_MARKER + 'buyBook("Hunter x Hunter", "Doraemon")' + DELIM + LOCK_MARKER + 'Exception'
+      + DELIM + LOCK_MARKER + 'buyBook("Doraemon", 100)' + DELIM + LOCK_MARKER + 'Not enough money'
+      + DELIM + LOCK_MARKER + 'buyBook("Code Geass", 800)' + DELIM + LOCK_MARKER + 'Your change: 200'
+      + DELIM + LOCK_MARKER + 'buyBook("Doraemon", 500)' + DELIM + LOCK_MARKER + 'Your change: 0'
+      + DELIM + LOCK_MARKER + 'buyBook(100, "Hunter x Hunter")' + DELIM + LOCK_MARKER + 'Exception'
+      + DELIM + LOCK_MARKER + 'buyBook("Hunter x Hunter", "Doraemon")' + DELIM + LOCK_MARKER + 'Exception'
   },
 ];
 
@@ -352,18 +352,34 @@ const ACTIVITIES_ARRAYS = [
   {
     title: 'Warm-up Activity',
     instructions: 'Can you print the length of this list?',
-    code: 'var toys = ["train", "headphones", "toy car"]\n\nprint() // ?'
+    code: 'var toys = ["train", "headphones", "toy car"]\n\nprint() // ...?'
   },
   {
     title: 'Sorting a List',
     instructions: 'Can you sort this list alphabetically?',
-    code: 'var studentNames = ["Xiyi", "Taroko", "Zeus", "Amy"]\n\n// ?\n\nprint(studentNames)'
+    code: 'var studentNames = ["Xiyi", "Taroko", "Zeus", "Amy"]\n\n// ...?\n\nprint(studentNames)'
   },
   {
     title: 'Gift Budget',
     instructions: 'Can you add up how much the total cost of these gifts is?',
-    code: 'var giftPrices = [10, 35, 21, 6]\n\n// ?'
+    code: 'var giftPrices = [10, 35, 21, 6]\n\nvar total = 0\nfor (      ) {\n\t// ...?\n}\n\nprint(total)'
   },
+  "newline",
+  {
+    title: 'Do they want it?',
+    instructions: 'Can you make a function that takes a gift and checks if it\'s on someone\'s Christmas list?',
+    code: 'var list = ["Mario Kart game", "Lego set", "Friendship bracelet"]\n\nfunction isInList(giftIdea) {\n\t// ...?\n}\n\nprint("Lego set: " + isInList("Lego set"))\nprint("Guitar: " + isInList("Guitar"))'
+  },
+  {
+    title: 'Naughty or Nice?',
+    instructions: 'We have two lists: one for "naughty" kids and one for "nice" kids. Can you make a function that checks which list a kid is on?',
+    code: 'var naughtyList = ["Braidon", "Emilia", "Tomo", "Greg"]\nvar niceList = ["Kenji", "Kokoro", "Ai", "Adam"]\n\nfunction naughtyOrNice(name) {\n\t// ...?\n}\n\nprint("Kokoro: " + naughtyOrNice("Kokoro"))\nprint("Emilia: " + naughtyOrNice("Emilia"))'
+  },
+  {
+    title: 'Challenge Problem',
+    instructions: 'One thing you can do with lists is use lists of lists! Can you make a function that finds the most expensive gift in a list?',
+    code: 'var sampleList = [\n\t["Guitar stand", 20], \n\t["Song book", 12], \n\t["Nintendo Switch", 300], \n\t["Headphones", 50]\n]\n// For example, sampleList[2][0] = "Nintendo Switch"\n\nfunction findMostExpensive(giftsWithPrices) {\n\tvar highestPrice = 0\n\tvar highestPriceItem = "none"\n\n\t// ...?\n\n\tprint(highestPriceItem + ": " + highestPrice)\n}\n\nfindMostExpensive(sampleList)',
+  }
 ];
 
 let ACTIVITIES_LISTS = {};
