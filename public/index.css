@@ -68,21 +68,32 @@ button {
     margin: 20px 0;
 }
 
-#samples>button {
+#samples>button, #activities>button {
     margin-right: 5px;
     margin-top: 5px;
-    background-color: cornsilk;
     border: 1px solid grey;
     padding: 3px 8px;
+}
+.primary-selected {
+    background-color: rgb(12, 38, 105);
+    color: white;
 }
 
-#activities>button {
-    margin-right: 5px;
-    margin-top: 5px;
-    background-color: rgb(220, 255, 239);
-    border: 1px solid grey;
-    padding: 3px 8px;
+.secondary-selected {
+    background-color: rgb(147, 147, 172);
+    color: white;
 }
+
+#samples .unselected {
+    background-color: cornsilk;
+    color: black;
+}
+
+#activities .unselected {
+    background-color: rgb(220, 255, 239);;
+    color: black;
+}
+
 
 #student-code-title {
     margin: 5px;

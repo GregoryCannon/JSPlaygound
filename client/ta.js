@@ -1,8 +1,8 @@
 const studentButtonContainer = document.getElementById('students-container');
-const studentCodeTitle = document.getElementById('student-code-title');
 
 const outputDiv = document.getElementById('output-div');
 const outputSection = document.getElementById('output-section');
+const codeSection = document.getElementById('ta-code-section');
 const samplesContainer = document.getElementById('samples');
 const activitiesContainer = document.getElementById('activities');
 const codeTextArea = document.getElementById('code-area');
@@ -14,6 +14,8 @@ const testCasesContainer = document.getElementById("test-cases");
 const testCasesOutputContainer = document.getElementById("output-section");
 
 const breakoutSelect = document.getElementById('ta-room-select');
+const buttonMarkCorrect = document.getElementById('mark-correct');
+const buttonMarkIncorrect = document.getElementById('mark-incorrect');
 
 const editor = new CodeEditor(
   ROLE.TEACHER,
@@ -23,13 +25,13 @@ const editor = new CodeEditor(
     renderedCodeContainer,
     outputDiv,
     studentButtonContainer,
-    studentCodeTitle,
     remoteEditNotificationText: null,
     testCasesContainer,
     testCasesOutputContainer,
     samplesContainer,
     activitiesContainer,
-    outputSection
+    outputSection,
+    codeSection
   });
 
 // Get a list of breakout rooms
@@ -85,3 +87,8 @@ outputSection.style.display = "none";
 // When the teacher changes what breakout room they have selected, render only
 // students in that room
 breakoutSelect.addEventListener('change', editor.renderStudentButtons);
+
+// buttonMarkCorrect.addEventListener('click', editor.markProblemCorrect());
+// buttonMarkIncorrect.addEventListener('click', editor.markProblemIncorrect());
+
+editor.onSessionStart();

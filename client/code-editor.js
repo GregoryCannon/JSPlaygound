@@ -8,18 +8,14 @@ class CodeEditor {
     this.codeContainer = uiElts.codeContainer;
     this.samplesContainer = uiElts.samplesContainer;
     this.activitiesContainer = uiElts.activitiesContainer;
+    this.codeSection = uiElts.codeSection;
     this.outputSection = uiElts.outputSection;
     this.renderedCodeContainer = uiElts.renderedCodeContainer;
     this.outputDiv = uiElts.outputDiv;
     this.studentButtonContainer = uiElts.studentButtonContainer;
-    this.studentCodeTitle = uiElts.studentCodeTitle;
     this.remoteEditNotificationText = uiElts.remoteEditNotificationText;
     this.testCasesContainer = uiElts.testCasesContainer;
     this.testCasesOutputContainer = uiElts.testCasesOutputContainer;
-
-    // UI Setup
-    this.codeTextArea.style.visibility = 'hidden';
-    this.testCasesContainer.style.display = 'none';
 
     // Event listeners
     codeTextArea.addEventListener('input', this.onCodeChangedByUser);
@@ -32,7 +28,8 @@ class CodeEditor {
 
     // State variables
     this.dataModel = this.getDefaultDataModel();
-    this.hasChangedCode = false;
+    this.teacherPeekQuestion = undefined;
+    this.needsPush = false;
     this.codeVersion = 0;
     this.userName = '';
     this.dataLookupByStudent = null;
@@ -87,6 +84,10 @@ class CodeEditor {
     return (textBoxElt.readOnly ? LOCK_MARKER : "") + textBoxElt.value
   }
 
+  getCurrentQuestion = () => {
+    return this.teacherPeekQuestion || this.dataModel.currentQuestion;
+  }
+
   loadDataModelToUi = (newVersion, newDataModel) => {
     this.dataModel = newDataModel;
     this.codeVersion = newVersion;
@@ -98,7 +99,6 @@ class CodeEditor {
   loadSingleQuestionCodeToUi =
     (newCode) => {
       const split = newCode.split(TEST_CONCAT_DELIM);
-      console.log("split code:", split);
 
       // Main component goes to main area
       this.loadCodeSegmentToTextBox(split[0], this.codeTextArea);
@@ -114,48 +114,30 @@ class CodeEditor {
         }
         i++
       })
-      this.onCodeChanged(/* byUser= */ false);
-      this.outputDiv.innerHTML = '';
+      this.resetOutput();
+      this.onCodeChanged();
     }
 
-  loadSamplesAndActivies = () => {
-    SAMPLES_LISTS[GlobalState.currentLesson].forEach((sample) => {
-      if (sample === 'newline') {
-        this.samplesContainer.appendChild(document.createElement('br'));
-        return;
-      }
-      const button = document.createElement('button');
-      button.innerHTML = sample.title;
-      button.onclick = () => this.selectQuestion(sample.title);
-      this.samplesContainer.appendChild(button);
-    })
-
-    ACTIVITIES_LISTS[GlobalState.currentLesson].forEach((sample) => {
-      if (sample === 'newline') {
-        this.activitiesContainer.appendChild(document.createElement('br'));
-        return;
-      }
-      const button = document.createElement('button');
-      button.innerHTML = sample.title;
-      button.onclick = () => this.selectQuestion(sample.title);
-      this.activitiesContainer.appendChild(button);
-    })
-
-    console.log("Loading samples and activities", GlobalState, this.testCasesContainer);
-    if (GlobalState.isUnitTestSetup) {
-      outputSection.style.display = "none";
-      this.testCasesContainer.style.display = 'block';
+  onQuestionClicked(questionTitle){
+    if (this.userRole === ROLE.STUDENT){
+      this.dataModel.currentQuestion = questionTitle;
+      console.log("Scheduling push due to selecting question");
+      this.schedulePush();
     } else {
-      this.testCasesContainer.style.display = 'none';
-      outputSection.style.display = 'block';
+      // For teachers, they can peek at other questions without affecting the data model
+      this.teacherPeekQuestion = questionTitle;
     }
+    this.selectQuestion(questionTitle);
   }
 
   /** Selects a given question */
   selectQuestion = (questionTitle) => {
-    this.dataModel.currentQuestion = questionTitle;
+    // Load the actual code and instructions
     this.loadSingleQuestionCodeToUi(this.dataModel[questionTitle].code);
     document.getElementById('instructions').innerHTML = this.dataModel[questionTitle].instructions;
+
+    // Refresh question buttons
+    this.renderQuestionButtons();
   }
 
   /** Loads all the sample code into the current code lookup */
@@ -175,7 +157,8 @@ class CodeEditor {
     return defaultDataModel;
   }
 
-  resetTestResults = () => {
+  resetOutput = () => {
+    this.outputDiv.innerHTML = '';
     this.forEachTestCase((_, __, output) => {
       output.innerHTML = "";
       output.parentElement.style.background = "transparent";
@@ -185,8 +168,6 @@ class CodeEditor {
 
 
   runTests = () => {
-    this.resetTestResults();
-
     this.forEachTestCase((caseElt, answerElt, output) => {
       const baseCode = codeTextArea.value.replace(/print/g, "");
       const testCode = caseElt.value;
@@ -252,29 +233,24 @@ class CodeEditor {
      Callback when the code is edited, either by the user or by a server
      update.
    */
-  onCodeChanged =
-    (byUser) => {
-      if (byUser) {
-        this.hasChangedCode = true;
-        this.schedulePush();
-      } else {
-        // Local changes were overwritten
-        this.hasChangedCode = false;
-      }
+  onCodeChanged = () => {
+    // Update the local data lookup
+    this.saveCurrentCodeToDataModel();
 
-      // Update the local data lookup
-      this.updateDataModel();
-
-      // Update the rendered layer to overlay the input layer pixel-for-pixel
-      this.renderCodeWithSyntaxHighlighting(
-        codeTextArea.value, renderedCodeContainer);
-      this.textAreaAdjust(
-        codeTextArea, [codeContainer, renderedCodeContainer]);
-    }
+    // Update the rendered layer to overlay the input layer pixel-for-pixel
+    this.renderCodeWithSyntaxHighlighting(
+      codeTextArea.value, renderedCodeContainer);
+    this.textAreaAdjust(
+      codeTextArea, [codeContainer, renderedCodeContainer]);
+  }
 
   onCodeChangedByUser =
     () => {
-      this.onCodeChanged(/* byUser= */ true);
+      if (this.remoteEditNotificationText !== null) {
+          this.remoteEditNotificationText.style.visibility = 'hidden';
+      }
+      this.schedulePush();
+      this.onCodeChanged();
     }
 
   /**
@@ -306,28 +282,79 @@ class CodeEditor {
       if (JSON.stringify(newList.map(x => x.split(' | ')[1])) !==
         JSON.stringify(oldList)) {
         // Clear existing buttons
-        while (this.studentButtonContainer.firstChild) {
-          this.studentButtonContainer.removeChild(
-            this.studentButtonContainer.firstChild);
-        }
+        removeAllChildren(this.studentButtonContainer);
 
         // Render new buttons
         for (const student of newList) {
           const [studentRoom, studentName] = student.split(' | ');
           const button = document.createElement('button');
           button.innerHTML = studentName;
+          button.studentFullUsername = student;
           button.onclick = () => {
-            if (activitiesContainer.children.length == 0) {
-              this.loadSamplesAndActivies();
-            }
+            console.log("button clicked:")
             this.setUserName(student);
-            this.studentCodeTitle.innerHTML = `${student}'s Code:`
-            this.resetTestResults();
+            this.resetOutput();
+            this.renderStudentButtonHighlights();
           };
           this.studentButtonContainer.appendChild(button);
         }
+        this.renderStudentButtonHighlights();
       }
     }
+
+  renderStudentButtonHighlights = () => {
+    for (const btn of this.studentButtonContainer.childNodes) {
+      if (btn.studentFullUsername === this.userName){
+        btn.classList.add("primary-selected");
+      } else {
+        btn.classList.remove("primary-selected");
+      }
+    }
+  }
+
+  /**
+   * Renders the list of samples and activities, with any relevant UI details 
+   * such as indicators for question completion, and selected state. 
+   */
+  renderQuestionButtons = () => {
+    removeAllChildren(this.samplesContainer);
+    removeAllChildren(this.activitiesContainer);
+
+    function getButton(sample) {
+      const button = document.createElement('button');
+      button.innerHTML = sample.title;
+      button.onclick = () => this.onQuestionClicked(sample.title);
+      // Highlight one color if you're currently viewing the question
+      if (this.getCurrentQuestion() === sample.title) {
+        button.classList.add("primary-selected");
+      }
+      // And another color if you're peeking at a different question but the student is working on this question
+      else if (this.dataModel.currentQuestion === sample.title) {
+        button.classList.add("secondary-selected");
+      }
+      else {
+        button.classList.add("unselected");
+      }
+      return button
+    }
+    getButton = getButton.bind(this);
+
+    SAMPLES_LISTS[GlobalState.currentLesson].forEach((sample) => {
+      if (sample === 'newline') {
+        this.samplesContainer.appendChild(document.createElement('br'));
+        return;
+      }
+      this.samplesContainer.appendChild(getButton(sample));
+    })
+
+    ACTIVITIES_LISTS[GlobalState.currentLesson].forEach((sample) => {
+      if (sample === 'newline') {
+        this.activitiesContainer.appendChild(document.createElement('br'));
+        return;
+      }
+      this.activitiesContainer.appendChild(getButton(sample));
+    })
+  }
 
   /** Uses the Prism library to render code with syntax highlighting */
   renderCodeWithSyntaxHighlighting =
@@ -380,11 +407,10 @@ class CodeEditor {
   /** Execute the code in the text area. */
   runCode =
     () => {
+      this.resetOutput();
       if (GlobalState.isUnitTestSetup) {
         this.runTests();
       } else {
-        // Clear old output
-        this.outputDiv.innerHTML = '';
         // Put code output to div
         setTimeout(() => {
           const code = codeTextArea.value;
@@ -407,23 +433,20 @@ class CodeEditor {
     (newName) => {
       this.userName = newName;
 
-      // Show the editor section for the first time
-      if (newName) {
-        this.codeTextArea.style.visibility = 'visible';
-        if (GlobalState.isUnitTestSetup) {
-          this.testCasesContainer.style.display = "block";
-        }
-      }
-
-      // Maybe load their code from the map
-      if (this.dataLookupByStudent !== null && this.dataLookupByStudent.hasOwnProperty(newName)) {
-        const [remoteVersion, remoteCodeObj] = this.dataLookupByStudent[this.userName];
-        this.loadDataModelToUi(remoteVersion, remoteCodeObj);
-      } else {
-        console.log('Set user name, not loading from map')
+      if (this.userRole == ROLE.STUDENT){
         // Schedule an initial push to show that the user is present
-        if (this.userRole == ROLE.STUDENT) {
-          this.schedulePush();
+        this.schedulePush();
+      } else {
+        // Show the editor section for the first time
+        this.codeSection.style.visibility = "visible"
+
+        // Reset teacher question peeking
+        this.teacherPeekQuestion = undefined;
+
+        // Maybe load their code from the map
+        if (this.dataLookupByStudent !== null && this.dataLookupByStudent.hasOwnProperty(newName)) {
+          const [remoteVersion, remoteCodeObj] = this.dataLookupByStudent[this.userName];
+          this.loadDataModelToUi(remoteVersion, remoteCodeObj);
         }
       }
     }
@@ -470,34 +493,37 @@ class CodeEditor {
           const [newMap, serverLagMultiplier] = array;
           antiDdosMultiplier = serverLagMultiplier;
 
-          console.log('Fetched. Refresh multiplier =', antiDdosMultiplier);
           this.numRefreshesSinceLastCount += 1;
           // Pull code
           if (newMap.hasOwnProperty(this.userName)) {
             const [remoteVersion, remoteCodeObj] = newMap[this.userName];
             const oldVersion = this.codeVersion
-            console.log("Pulled from server. New version:", remoteVersion, "Old:", oldVersion);
+            console.log("Pulled from server. New version:", remoteVersion, "Old:", oldVersion, "Refresh multiplier =", antiDdosMultiplier);
+
+            // If teacher, maybe overwrite student code
+            if (this.userRole === ROLE.TEACHER &&
+              remoteVersion < oldVersion) {
+              const updatedDataModel = JSON.parse(JSON.stringify(this.dataModel));
+              newMap[this.userName] = [this.codeVersion, updatedDataModel];
+            }
 
             // Maybe load code to the UI
-            if (remoteVersion > oldVersion) {
+            else if (remoteVersion > oldVersion) {
               // Maybe show a notification that a teacher has edited your code
               if (this.userRole === ROLE.STUDENT &&
                 this.remoteEditNotificationText !== null) {
-                if (!Number.isInteger(this.codeVersion) && !this.hasChangedCode) {
+                if (!Number.isInteger(this.codeVersion)) {
                   this.remoteEditNotificationText.style.visibility = 'visible';
                 } else {
                   this.remoteEditNotificationText.style.visibility = 'hidden';
                 }
               }
-
+              this.onCodeChanged(/* byUser = */ false);
+              // Code was overwritten
+              this.needsPush = false;
               this.loadDataModelToUi(remoteVersion, remoteCodeObj)
             }
-            // If teacher, maybe overwrite student code
-            else if (this.userRole === ROLE.TEACHER &&
-              remoteVersion < oldVersion) {
-              const updatedDataModel = JSON.parse(JSON.stringify(this.dataModel));
-              newMap[this.userName] = [this.codeVersion, updatedDataModel];
-            }
+            
           }
 
           // Pull student list
@@ -508,7 +534,7 @@ class CodeEditor {
         });
     }
 
-  updateDataModel = () => {
+  saveCurrentCodeToDataModel = () => {
     const newLookup = JSON.parse(JSON.stringify(this.dataModel));
     let currentQuestionCode = this.getCodeSegmentFromTextBox(this.codeTextArea);
     // Maybe add unit test code
@@ -521,15 +547,28 @@ class CodeEditor {
       })
     }
     // Update the local question -> code map
-    console.log("New code:", currentQuestionCode, this.dataModel.currentQuestion, this.dataModel);
-    newLookup[this.dataModel.currentQuestion].code = currentQuestionCode;
-    console.log("New lookup:", newLookup);
+    newLookup[this.getCurrentQuestion()].code = currentQuestionCode;
     this.dataModel = newLookup;
+  }
+
+  onSessionStart = () => {
+    // UI Setup
+    if (this.userRole === ROLE.TEACHER) {
+      this.codeSection.style.visibility = "hidden";
+    }
+    if (GlobalState.isUnitTestSetup) {
+      outputSection.style.display = "none";
+      this.testCasesContainer.style.display = 'block';
+    } else {
+      this.testCasesContainer.style.display = 'none';
+      outputSection.style.display = 'block';
+    }
+    this.renderQuestionButtons();
   }
 
   pushToServer =
     () => {
-      if (this.hasChangedCode || this.codeVersion === 0) {
+      if (this.needsPush || this.codeVersion === 0) {
         this.incrementVersion();
         this.makePostRequest(
           {
@@ -538,7 +577,7 @@ class CodeEditor {
             dataModel: this.dataModel
           },
           () => { console.log('Posted to server.') });
-        this.hasChangedCode = false;
+        this.needsPush = false;
       }
     }
 
@@ -563,13 +602,14 @@ class CodeEditor {
 
   schedulePush =
     () => {
+      this.needsPush = true;
       this.ticksUntilPush = Math.round(EDIT_TO_PUSH_DELAY_MS / TICK_MS);
     }
 
   syncWithServer =
     () => {
       // Update the code version if it was changed
-      if (this.hasChangedCode) {
+      if (this.needsPush) {
         this.incrementVersion();
       }
 
@@ -625,3 +665,10 @@ function allowTabbing(textarea, onTabCallback) {
   });
 }
 allowTabbing = allowTabbing.bind(this);
+
+/** Util function to clear all children of a div or other HTML elt */
+function removeAllChildren(parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+}

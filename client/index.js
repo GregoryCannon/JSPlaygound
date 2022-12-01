@@ -1,5 +1,6 @@
 const outputDiv = document.getElementById('output-div');
 const outputSection = document.getElementById('output-section');
+const codeSection = document.getElementById('code-section');
 const codeTextArea = document.getElementById('code-area');
 
 const codeContainer = document.getElementById('code-container');
@@ -42,7 +43,7 @@ function login() {
     loggedInView.style.display = 'inline';
     loginForm.style.display = 'none';
 
-    editor.loadSamplesAndActivies();
+    editor.onSessionStart();
   } else {
     alert('Breakout room or name missing.')
   }
@@ -57,7 +58,7 @@ function loginForReview() {
   GlobalState.currentLesson = lessonPicker.value;
   GlobalState.isUnitTestSetup = lessonPicker.value === Titles.UNIT_TESTING || lessonPicker.value == Titles.ADVANCED_UNIT_TESTING;
   console.log(GlobalState);
-  editor.loadSamplesAndActivies();
+  editor.onSessionStart();
 }
 
 /* ------------------
@@ -81,7 +82,8 @@ const editor = new CodeEditor(
     testCasesOutputContainer,
     samplesContainer,
     activitiesContainer,
-    outputSection
+    outputSection,
+    codeSection
   });
 
 // setTimeout(promptForUserName, 10);
