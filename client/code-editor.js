@@ -425,6 +425,7 @@ class CodeEditor {
   runCode =
     () => {
       this.resetOutput();
+      this.outputSection.scrollIntoView()
       if (GlobalState.isUnitTestSetup) {
         this.runTests();
       } else {
