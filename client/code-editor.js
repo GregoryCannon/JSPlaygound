@@ -26,6 +26,7 @@ class CodeEditor {
 
     // State variables
     this.dataModel = this.getDefaultDataModel();
+    this.instructionsLookup = this.getInstructionLookup();
     this.teacherPeekQuestion = undefined;
     this.needsPush = false;
     this.codeVersion = 0;
@@ -116,8 +117,8 @@ class CodeEditor {
       this.onCodeChanged();
     }
 
-  onQuestionClicked(questionTitle){
-    if (this.userRole === ROLE.STUDENT){
+  onQuestionClicked(questionTitle) {
+    if (this.userRole === ROLE.STUDENT) {
       this.dataModel.currentQuestion = questionTitle;
       console.log("Scheduling push due to selecting question");
       this.schedulePush();
@@ -132,7 +133,7 @@ class CodeEditor {
   selectQuestion = (questionTitle) => {
     // Load the actual code and instructions
     this.loadSingleQuestionCodeToUi(this.dataModel[questionTitle].code);
-    document.getElementById('instructions').innerHTML = this.dataModel[questionTitle].instructions;
+    document.getElementById('instructions').innerHTML = this.instructionsLookup[questionTitle];
 
     // Refresh question buttons
     this.renderQuestionButtons();
@@ -141,18 +142,30 @@ class CodeEditor {
   /** Loads all the sample code into the current code lookup */
   getDefaultDataModel = () => {
     const defaultDataModel = {}
-    defaultDataModel[NO_QUESTION] = { title: "", instructions: "Select a code sample or an activity above.", code: "" };
     defaultDataModel.currentQuestion = NO_QUESTION;
 
     // Add the code samples to the default data model
     SAMPLES_LISTS[GlobalState.currentLesson].forEach((sample) => {
-      defaultDataModel[sample.title] = sample
+      defaultDataModel[sample.title] = { code: sample.code }
     })
     ACTIVITIES_LISTS[GlobalState.currentLesson].forEach((sample) => {
-      defaultDataModel[sample.title] = sample
+      defaultDataModel[sample.title] = { code: sample.code }
     })
 
     return defaultDataModel;
+  }
+
+  /** Gets a local lookup for the instructions to all problems */
+  getInstructionLookup = () => {
+    const instructionsLookup = {};
+    SAMPLES_LISTS[GlobalState.currentLesson].forEach((sample) => {
+      instructionsLookup[sample.title] = sample.instructions;
+    })
+    ACTIVITIES_LISTS[GlobalState.currentLesson].forEach((sample) => {
+      instructionsLookup[sample.title] = sample.instructions;
+    })
+    instructionsLookup[NO_QUESTION] = "Select a code sample or an activity above."
+    return instructionsLookup;
   }
 
   resetOutput = () => {
@@ -245,7 +258,7 @@ class CodeEditor {
   onCodeChangedByUser =
     () => {
       if (this.userRole === ROLE.STUDENT && this.remoteEditNotificationText !== null) {
-          this.remoteEditNotificationText.style.visibility = 'hidden';
+        this.remoteEditNotificationText.style.visibility = 'hidden';
       }
       this.schedulePush();
       this.onCodeChanged();
@@ -303,7 +316,7 @@ class CodeEditor {
 
   renderStudentButtonHighlights = () => {
     for (const btn of this.studentButtonContainer.childNodes) {
-      if (btn.studentFullUsername === this.userName){
+      if (btn.studentFullUsername === this.userName) {
         btn.classList.add("primary-selected");
       } else {
         btn.classList.remove("primary-selected");
@@ -323,9 +336,9 @@ class CodeEditor {
       const button = document.createElement('button');
       const status = this.dataModel[sample.title].status
       let statusText = "";
-      if (status === STATUS_CORRECT){
+      if (status === STATUS_CORRECT) {
         statusText = "✅ "
-      } else if (status === STATUS_INCORRECT){
+      } else if (status === STATUS_INCORRECT) {
         statusText = "🟡 "
       }
       button.innerHTML = statusText + sample.title;
@@ -362,9 +375,9 @@ class CodeEditor {
     })
   }
 
-  markQuestionWithStatus(newStatus){
+  markQuestionWithStatus(newStatus) {
     const question = this.getCurrentQuestion();
-    if (this.dataModel[question].status !== newStatus){
+    if (this.dataModel[question].status !== newStatus) {
       this.dataModel[question].status = newStatus;
     } else {
       this.dataModel[question].status = STATUS_UNGRADED;
@@ -451,7 +464,7 @@ class CodeEditor {
     (newName) => {
       this.userName = newName;
 
-      if (this.userRole == ROLE.STUDENT){
+      if (this.userRole == ROLE.STUDENT) {
         // Schedule an initial push to show that the user is present
         this.schedulePush();
       } else {
@@ -541,7 +554,7 @@ class CodeEditor {
               this.needsPush = false;
               this.loadDataModelToUi(remoteVersion, remoteCodeObj)
             }
-            
+
           }
 
           // Pull student list
