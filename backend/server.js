@@ -1,5 +1,6 @@
 
 const express = require('express');
+const lzString = require("../public/lzstring/lz-string");
 const path = require('path');
 
 const dataLookupByStudent = {};
@@ -27,7 +28,11 @@ app.use((req, res, next) => {
 });
 
 app.get('/data', function (req, res) {
-  res.end(JSON.stringify([dataLookupByStudent, antiDdosMultiplier]));
+  const uncompressedData = JSON.stringify([dataLookupByStudent, antiDdosMultiplier])
+  const compressedData = lzString.compressToUTF16(uncompressedData);
+  console.log("UNC", uncompressedData);
+  console.log("COMPRESSED", typeof(compressedData), compressedData);
+  res.end(compressedData);
 });
 
 app.post('/', function(req, res) {

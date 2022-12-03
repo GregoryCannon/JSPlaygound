@@ -143,6 +143,7 @@ class CodeEditor {
   getDefaultDataModel = () => {
     const defaultDataModel = {}
     defaultDataModel.currentQuestion = NO_QUESTION;
+    defaultDataModel[NO_QUESTION] = { code: "" }
 
     // Add the code samples to the default data model
     SAMPLES_LISTS[GlobalState.currentLesson].forEach((sample) => {
@@ -519,11 +520,23 @@ class CodeEditor {
   pullFromServer =
     () => {
       fetch(SERVER_URL + '/data')
-        .then(response => response.json())
-        .then((array) => {
+        .then(response => response.text())
+        .then((compressedText) => {
+          const decompressed = LZString.decompressFromUTF16(compressedText);
+          // console.log("text", compressedText);
+          // console.log("decompressed", decompressed);
+          console.log("LENGTHS:", compressedText.length, decompressed.length);
+          
+          const array = JSON.parse(decompressed);
           const [newMap, serverLagMultiplier] = array;
           antiDdosMultiplier = serverLagMultiplier;
 
+          // const uncompressed = JSON.stringify(newMap);
+          // const compressed = LZString.compress(uncompressed);
+          // console.log("UNCOMPRESSED", uncompressed.length, "COMPRESSED", compressed.length);
+          // const reverted = LZString.decompress(compressed);
+          // console.log("EQUAL?", reverted === uncompressed);
+          
           this.numRefreshesSinceLastCount += 1;
           // Pull code
           if (newMap.hasOwnProperty(this.userName)) {
