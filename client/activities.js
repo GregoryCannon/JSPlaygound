@@ -366,7 +366,7 @@ const ACTIVITIES_ARRAYS = [
   // },
   {
     title: 'Gift Budget',
-    instructions: 'Can you add up how much the total cost of these gifts is?',
+    instructions: 'Can you add up how much the total cost of these gifts is? (Remember, we can use "+=" to add to a variable).',
     code: 'var giftPrices = [10, 35, 21, 6]\n\nvar total = 0\nfor (      ) {\n\t// ...?\n}\n\nprint(total)'
   },
   "newline",
