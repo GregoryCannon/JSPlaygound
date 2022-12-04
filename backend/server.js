@@ -30,8 +30,6 @@ app.use((req, res, next) => {
 app.get('/data', function (req, res) {
   const uncompressedData = JSON.stringify([dataLookupByStudent, antiDdosMultiplier])
   const compressedData = lzString.compressToUTF16(uncompressedData);
-  console.log("UNC", uncompressedData);
-  console.log("COMPRESSED", typeof(compressedData), compressedData);
   res.end(compressedData);
 });
 
