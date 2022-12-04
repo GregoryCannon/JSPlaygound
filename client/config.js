@@ -27,7 +27,7 @@ const STUDENT_SYNC_INTERVAL_MS = 2500;
 const TEACHER_SYNC_INTERVAL_MS = 1000;
 // Multiplier for sync intervals that can be edited in real-time if the server
 // is under heavy load
-let antiDdosMultiplier = 1.0;
+let antiDdosMultiplier = 3.0;
 // The delay between the last keystroke and pushing to the server
 const EDIT_TO_PUSH_DELAY_MS = 500;
 // How ofton to check if a sync with the server is needed
