@@ -34,7 +34,6 @@ app.get('/data', function (req, res) {
 });
 
 app.post('/', function(req, res) {
-  console.log(req.body);
   const name = req.body.name;
   const version = req.body.version;
   const dataModel = req.body.dataModel;

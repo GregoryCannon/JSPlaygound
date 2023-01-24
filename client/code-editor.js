@@ -335,14 +335,17 @@ class CodeEditor {
 
     function getButton(sample) {
       const button = document.createElement('button');
-      const status = this.dataModel[sample.title].status
       let statusText = "";
-      if (status === STATUS_CORRECT) {
-        statusText = "✅ "
-      } else if (status === STATUS_INCORRECT) {
-        statusText = "🟡 "
+      if (this.dataModel[sample.title]) {
+        const status = this.dataModel[sample.title].status
+        if (status === STATUS_CORRECT) {
+          statusText = "✅ "
+        } else if (status === STATUS_INCORRECT) {
+          statusText = "🟡 "
+        }
       }
       button.innerHTML = statusText + sample.title;
+
       button.onclick = () => this.onQuestionClicked(sample.title);
       // Highlight one color if you're currently viewing the question
       if (this.getCurrentQuestion() === sample.title) {
@@ -525,8 +528,8 @@ class CodeEditor {
           const decompressed = LZString.decompressFromUTF16(compressedText);
           // console.log("text", compressedText);
           // console.log("decompressed", decompressed);
-          console.log("LENGTHS:", compressedText.length, decompressed.length);
-          
+          // console.log("LENGTHS:", compressedText.length, decompressed.length);
+
           const array = JSON.parse(decompressed);
           const [newMap, serverLagMultiplier] = array;
           antiDdosMultiplier = serverLagMultiplier;
@@ -536,7 +539,7 @@ class CodeEditor {
           // console.log("UNCOMPRESSED", uncompressed.length, "COMPRESSED", compressed.length);
           // const reverted = LZString.decompress(compressed);
           // console.log("EQUAL?", reverted === uncompressed);
-          
+
           this.numRefreshesSinceLastCount += 1;
           // Pull code
           if (newMap.hasOwnProperty(this.userName)) {
@@ -607,6 +610,7 @@ class CodeEditor {
       this.testCasesContainer.style.display = 'none';
       outputSection.style.display = 'block';
     }
+    this.dataModel = this.getDefaultDataModel(); // Load the data for the current unit
     this.renderQuestionButtons();
   }
 
