@@ -3,7 +3,8 @@ const Titles = {
   FUNCTIONS: "Functions",
   UNIT_TESTING: "UnitTests",
   ADVANCED_UNIT_TESTING: "AdvUnitTests",
-  ARRAYS: "Arrays"
+  ARRAYS: "Arrays",
+  MAPS: "Maps"
 }
 
 /* --------------------
@@ -331,6 +332,10 @@ const ACTIVITIES_ADVANCED_UNIT_TESTING = [
   },
 ];
 
+/* --------------------
+Arrays activity (Nov 2022)
+------------------- */
+
 const SAMPLES_ARRAYS = [
   {
     title: 'Creating Arrays',
@@ -392,12 +397,68 @@ const ACTIVITIES_ARRAYS = [
   }
 ];
 
+/* --------------------
+Maps activity (Jan 2023)
+------------------- */
+
+const SAMPLES_MAPS = [
+  {
+    title: 'Creating Maps',
+    instructions: 'This sample shows how to create a map.',
+    code: '// Create a map\nvar menu = new Map()\n\n// Add keys (menu items) and values (prices)\nmenu.set("Coffee", 300)\nmenu.set("Bagel", 600)'
+  },
+  {
+    title: 'Using "Get"',
+    instructions: 'This sample shows how to look up values in a map.',
+    code: 'var menu = new Map()\nmenu.set("Coffee", 300)\nmenu.set("Bagel", 600)\n\n// Look up the price of a bagel\nvar bagelPrice = menu.get("Bagel")\nprint(bagelPrice)'
+  },
+  {
+    title: 'Changing values',
+    instructions: 'This sample shows how to change existing values in a map',
+    code: 'var menu = new Map()\nmenu.set("Coffee", 300)\nmenu.set("Bagel", 600)\n\n// Offer a discount on bagels!\nmenu.set("Bagel", 500)\n\nprint(menu.get("Bagel"))'
+  },
+  {
+    title: 'Looping through a map',
+    instructions: 'This sample shows how to loop through all the keys in a map.',
+    code: 'var menu = new Map()\nmenu.set("Coffee", 300)\nmenu.set("Bagel", 600)\n\n// Print the menu items\nfor (var item of menu.keys()) {\n\tvar price = menu.get(item)\n\tprint(item + " costs " + price)\n}'
+  }
+];
+const ACTIVITIES_MAPS = [
+  {
+    title: 'Warm-up Activity',
+    instructions: 'Can you print the price of a donut?',
+    code: 'var prices = new Map()\nprices.set("Donut", 300)\nprices.set("Frosted donut", 350)\n\nvar donutPrice = prices.get(  )   // ?\nprint(donutPrice)'
+  },
+  {
+    title: 'Adding an item',
+    instructions: 'Can you add a new type of donut, "donut hole", that costs 100?',
+    code: 'var prices = new Map()\nprices.set("Donut", 300)\nprices.set("Frosted donut", 350)\n\n// ?\n\nprint(prices.get("Donut hole"))'
+  },
+  {
+    title: 'Donut Day',
+    instructions: 'On this special day, everything on the menu costs 100 yen. Can you loop through and set all the prices?',
+    code: 'var prices = new Map()\nprices.set("Donut", 300)\nprices.set("Frosted donut", 350)\nprices.set("Matcha", 400)\nprices.set("Coffee", 300)\n\n// ?\nfor (   ) {\n\n}'
+  },
+  "newline",
+  {
+    title: 'Buying everything',
+    instructions: 'Can you calculate how much it would cost to buy everything on the menu? Hint: use a for loop!',
+    code: 'var prices = new Map()\nprices.set("Donut", 300)\nprices.set("Frosted donut", 350)\nprices.set("Matcha", 400)\nprices.set("Coffee", 300)\n\nvar totalCost = 0\n// ?'
+  },
+  {
+    title: 'Challenge problem',
+    instructions: 'Can you create a second map called discountedPrices that applies a 20% discount to all items on the menu? Hint: use a for loop!',
+    code: 'var prices = new Map()\nprices.set("Donut", 300)\nprices.set("Frosted donut", 350)\nprices.set("Matcha", 400)\nprices.set("Coffee", 300)\n\nvar discountedPrices = new Map()\n// ?'
+  },
+];
+
 let ACTIVITIES_LISTS = {};
 ACTIVITIES_LISTS[Titles.FOR_LOOP] = ACTIVITIES_FOR_LOOP;
 ACTIVITIES_LISTS[Titles.FUNCTIONS] = ACTIVITIES_FUNCTIONS;
 ACTIVITIES_LISTS[Titles.UNIT_TESTING] = ACTIVITIES_UNIT_TESTING;
 ACTIVITIES_LISTS[Titles.ADVANCED_UNIT_TESTING] = ACTIVITIES_ADVANCED_UNIT_TESTING;
 ACTIVITIES_LISTS[Titles.ARRAYS] = ACTIVITIES_ARRAYS;
+ACTIVITIES_LISTS[Titles.MAPS] = ACTIVITIES_MAPS;
 
 let SAMPLES_LISTS = {};
 SAMPLES_LISTS[Titles.FOR_LOOP] = SAMPLES_FOR_LOOP;
@@ -405,3 +466,4 @@ SAMPLES_LISTS[Titles.FUNCTIONS] = SAMPLES_FUNCTIONS;
 SAMPLES_LISTS[Titles.UNIT_TESTING] = SAMPLES_UNIT_TESTING;
 SAMPLES_LISTS[Titles.ADVANCED_UNIT_TESTING] = SAMPLES_ADVANCED_UNIT_TESTING;
 SAMPLES_LISTS[Titles.ARRAYS] = SAMPLES_ARRAYS;
+SAMPLES_LISTS[Titles.MAPS] = SAMPLES_MAPS;
