@@ -51,6 +51,6 @@ const BREAKOUT_ROOMS = [
 // });
 
 const GlobalState = {
-  currentLesson: Titles.ARRAYS, // Currently unused
+  currentLesson: Titles.MAPS, // Currently unused
   isUnitTestSetup: false  
 }
