@@ -40,8 +40,8 @@ const ENABLED_TEXT_AREA_COLOR = "#fff";
 
 const BREAKOUT_ROOMS = [
   "L1-1", "L1-2", "L1-3",
-  "L2-1", "L2-2", "L2-3", "L2-4",
-  "L3-1", "L3-2", "L3-3", "L3-4", "L3-5",
+  "L2-1", "L2-2", "L2-3",
+  "L3-1", "L3-2", "L3-3", "L3-4",
   "L4-1", "L4-2", "L4-3", "L4-4", "L4-5", "L4-6", "L4-7", "L4-8"
 ]
 // BREAKOUT_ROOMS.sort((a, b) => {
