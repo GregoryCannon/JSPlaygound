@@ -284,7 +284,6 @@ class CodeEditor {
       // Get new list
       let newList = [];
       for (const student of Object.keys(this.dataLookupByStudent).sort()) {
-        console.log("Found student", student, this.dataLookupByStudent);
         const [studentRoom, studentName] = student.split(' | ');
         if (studentRoom !== taRoom && taRoom !== '(all rooms)') {
           continue;
