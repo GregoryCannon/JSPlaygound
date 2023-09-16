@@ -1,0 +1,30 @@
+<html>
+  
+<head>
+  <title>Links test</title>
+  <script src="../links.js" charset="utf-8"></script>
+  <script charset="utf-8">
+    function testShorten() {
+      function test(names, expected) {
+        const actual = Array.from(shorten(names).values());
+        actual.sort();
+        expected.sort();
+        console.assert(actual.length === expected.length);
+        for (let i = 0; i < actual.length; i++) {
+          console.assert(actual[i] === expected[i]); 
+        }
+      }
+
+      test(['alice blue'], ['a b']);
+      test(['alice', 'bob'], ['a', 'b']);
+      test(['alice', 'alice bob'], ['a', 'a b']);
+      test(['alice blue', 'alice brown'], ['a bl', 'a br']);
+      test(['alice blue', 'bob green', 'charlie red'], ['a b', 'b g', 'c r']);
+      test(['alice blue', 'alice brown', 'alice black'], ['a blu', 'a br', 'a bla']);
+      test(['alice blue', 'alice bluer'], ['a blue', 'a bluer']);
+    }
+    testShorten();
+  </script>
+</head>
+
+</html>
