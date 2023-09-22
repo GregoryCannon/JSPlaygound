@@ -15,13 +15,13 @@
         }
       }
 
-      test(['alice blue'], ['a b']);
-      test(['alice', 'bob'], ['a', 'b']);
-      test(['alice', 'alice bob'], ['a', 'a b']);
-      test(['alice blue', 'alice brown'], ['a bl', 'a br']);
-      test(['alice blue', 'bob green', 'charlie red'], ['a b', 'b g', 'c r']);
-      test(['alice blue', 'alice brown', 'alice black'], ['a blu', 'a br', 'a bla']);
-      test(['alice blue', 'alice bluer'], ['a blue', 'a bluer']);
+      test(['alice blue'], ['alice b.']);
+      test(['alice', 'bob'], ['alice', 'bob']);
+      test(['alice', 'alice bob'], ['alice', 'alice b.']);
+      test(['alice blue', 'alice brown'], ['alice bl.', 'alice br.']);
+      test(['alice blue', 'bob green', 'charlie red'], ['alice b.', 'bob g.', 'charlie r.']);
+      test(['alice blue', 'alice brown', 'alice black'], ['alice blu.', 'alice br.', 'alice bla.']);
+      test(['alice blue', 'alice bluer'], ['alice blue', 'alice blue.']);
     }
     testShorten();
   </script>

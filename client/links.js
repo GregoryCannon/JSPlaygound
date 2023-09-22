@@ -45,12 +45,16 @@ function shorten(names) {
     const nameMap = new Map();
     for (const name of namesLeft) {
       const nameParts = name.split(' ');
-      const firstName = nameParts[0];
 
-      // For simplicity always use one letter for the first name.
-      const truncParts = [firstName.substring(0, 1)];
+      // For simplicity show the full first name.
+      const truncParts = [nameParts[0]];
       for (const part of nameParts.slice(1)) {
-        truncParts.push(part.substring(0, truncLen));
+        let truncPart = part.substring(0, truncLen);
+        if (truncPart.length < part.length) {
+          // Indicate that the name was truncated.
+          truncPart += '.';
+        }
+        truncParts.push(truncPart);
       }
       const truncName = truncParts.join(' ');
 
