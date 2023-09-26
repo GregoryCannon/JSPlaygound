@@ -77,7 +77,7 @@ function shorten(names) {
   return ret;
 }
 
-function titleCase(s) {
+function toTitleCase(s) {
   const words = s.split(' ');
   return words.map(
     w => w[0].toUpperCase() + w.substring(1).toLowerCase()
@@ -85,11 +85,11 @@ function titleCase(s) {
 }
 
 // Returns a clickable DOM element that navigates to the link.
-function linkElement(link) {
+function getLinkElement(link) {
   const a = document.createElement('a');
   a.href = link['url'];
   a.target = '_blank';
-  a.textContent = titleCase(link['label']);
+  a.textContent = toTitleCase(link['label']);
   return a;
 }
 
@@ -99,7 +99,7 @@ function populatePage(data) {
   const shortNames = shorten(names);
   for (const name of names) {
     const option = document.createElement('option');
-    option.text = titleCase(shortNames.get(name));
+    option.text = toTitleCase(shortNames.get(name));
     option.value = name;
     nameSelect.appendChild(option);
   }
@@ -112,7 +112,7 @@ function populatePage(data) {
     // Remove any previously added links.
     linksContainer.textContent = '';
     for (const link of links) {
-      linksContainer.appendChild(linkElement(link));
+      linksContainer.appendChild(getLinkElement(link));
     }
   };
 }
