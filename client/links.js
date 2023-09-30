@@ -3,30 +3,23 @@ const linksContainer = document.getElementById('links-container');
 
 // Returns student names mapped to a list of links.
 // Keys are ordered alphabetically.
-async function loadStudentLinks() {
+async function loadStudentLinks(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    console.error(`Failed to fetch ${url}`);
+    return null;
+  }
+
+  // Assumes a file whose lines are name,replit_url.
+  const text = await response.text();
+  const lines = text.split('\n');
   const data = new Map();
-  // TODO(gavinmak): Load this from a static file.
-  data.set('alice blue', [
-    {'label': 'homework', 'url': 'https://google.com'},
-    {'label': 'jamboard', 'url': 'https://google.com'},
-    {'label': 'breakout room', 'url': 'https://google.com'},
-  ]);
-  data.set('bob red', [
-    {'label': 'homework', 'url': 'https://google.com'},
-    {'label': 'breakout room', 'url': 'https://google.com'},
-  ]);
-  data.set('brent reddy', [
-    {'label': 'jamboard', 'url': 'https://google.com'},
-    {'label': 'breakout room', 'url': 'https://google.com'},
-  ]);
-  data.set('charles black', [
-    {'label': 'jamboard', 'url': 'https://google.com'},
-    {'label': 'breakout room', 'url': 'https://google.com'},
-  ]);
-  data.set('charles brown', [
-    {'label': 'jamboard', 'url': 'https://google.com'},
-    {'label': 'breakout room', 'url': 'https://google.com'},
-  ]);
+  for (const line of lines) {
+    const [name, url] = line.split(',');
+    // Hard code repl.it for now until we have more links.
+    data.set(name, [{label: 'repl.it', url}]);
+  }
+
   return new Map([...data].sort());
 }
 
@@ -122,6 +115,6 @@ function populatePage(data) {
 -------------------- */
 
 document.addEventListener('DOMContentLoaded', async (_) => {
-  const data = await loadStudentLinks();
+  const data = await loadStudentLinks('replit.csv');
   populatePage(data);
 });
