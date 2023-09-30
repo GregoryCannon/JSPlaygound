@@ -227,6 +227,23 @@ textarea {
     background: #fff1e9;
 }
 
+#links-body {
+    background: #f3fcff;
+}
+
+#links-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#links-container > a {
+    padding: 0.5em;
+    margin: 0.5em;
+    width: fit-content;
+    background-color: lightblue;
+    border-radius: 10px;
+}
+
 #test-cases textarea{
     width: 320px;
     word-wrap: initial;
