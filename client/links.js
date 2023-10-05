@@ -1,7 +1,7 @@
 const nameSelect = document.getElementById('name-select');
 const linksContainer = document.getElementById('links-container');
 
-// Returns student names mapped to a list of links.
+// Returns lowercased student names mapped to a list of links.
 // Keys are ordered alphabetically.
 async function loadStudentLinks(url) {
   const response = await fetch(url);
@@ -17,7 +17,7 @@ async function loadStudentLinks(url) {
   for (const line of lines) {
     const [name, url] = line.split(',');
     // Hard code repl.it for now until we have more links.
-    data.set(name, [{label: 'repl.it', url}]);
+    data.set(name.toLowerCase(), [{label: 'repl.it', url}]);
   }
 
   return new Map([...data].sort());
@@ -37,7 +37,8 @@ function shorten(names) {
     // Maps truncName -> [fullName, ...]
     const nameMap = new Map();
     for (const name of namesLeft) {
-      const nameParts = name.split(' ');
+      // Handle names with multiple spaces.
+      const nameParts = name.split(' ').filter(n => n != '');
 
       // For simplicity show the full first name.
       const truncParts = [nameParts[0]];
