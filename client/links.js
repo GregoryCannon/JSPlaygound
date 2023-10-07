@@ -15,9 +15,12 @@ async function loadStudentLinks(url) {
   const lines = text.split('\n');
   const data = new Map();
   for (const line of lines) {
-    const [name, url] = line.split(',');
+    const [name, url, room] = line.split(',');
     // Hard code repl.it for now until we have more links.
-    data.set(name.toLowerCase(), [{label: 'repl.it', url}]);
+    data.set(name.toLowerCase(), {
+      links: [{label: 'repl.it', url}],
+      room: room.trim(),
+    });
   }
 
   return new Map([...data].sort());
@@ -93,13 +96,15 @@ function populatePage(data) {
   const shortNames = shorten(names);
   for (const name of names) {
     const option = document.createElement('option');
-    option.text = toTitleCase(shortNames.get(name));
+    const displayName = toTitleCase(shortNames.get(name));
+    const {room} = data.get(name);
+    option.text = `${displayName} (${room})`;
     option.value = name;
     nameSelect.appendChild(option);
   }
   nameSelect.onchange = (e) => {
     const name = e.target.value;
-    const links = data.get(name);
+    const {links} = data.get(name);
     if (!links) {
       return;
     }
